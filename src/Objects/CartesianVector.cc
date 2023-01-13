@@ -44,8 +44,8 @@ void CartesianVector::GetSphericalCoordinates(float &radius, float &phi, float &
         throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
 
     radius = magnitude;
-    phi    = std::atan2(m_y, m_x);
-    theta  = std::acos(m_z / radius);
+    phi    = std::atan2(GetY(), GetX());
+    theta  = std::acos(GetZ() / radius);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -57,9 +57,9 @@ void CartesianVector::GetCylindricalCoordinates(float &radius, float &phi, float
     if (std::fabs(magnitude) < std::numeric_limits<float>::epsilon())
         throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
 
-    radius = std::sqrt(m_y * m_y + m_x * m_x);
-    phi    = std::atan2(m_y, m_x);
-    z      = m_z;
+    radius = std::sqrt(GetY() * GetY() + GetX() * GetX());
+    phi    = std::atan2(GetY(), GetX());
+    z      = GetZ();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ CartesianVector CartesianVector::GetUnitVector() const
     if (std::fabs(magnitude) < std::numeric_limits<float>::epsilon())
         throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
 
-    return CartesianVector(m_x / magnitude, m_y / magnitude, m_z / magnitude);
+    return CartesianVector(GetX() / magnitude, GetY() / magnitude, GetZ() / magnitude);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------

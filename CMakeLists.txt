@@ -15,12 +15,16 @@ set(${PROJECT_NAME}_VERSION_MINOR 04)
 set(${PROJECT_NAME}_VERSION_PATCH 01)
 set(${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
 
+# Use Eigen
+find_package(Eigen3 3.3 REQUIRED)
+
 #-------------------------------------------------------------------------------------------------------------------------------------------
 # Dependencies
 include(PandoraCMakeSettings)
 
 # Prefer local include directory to any paths to installed header files
 include_directories(include)
+include_directories(SYSTEM ${EIGEN3_INCLUDE_DIRS})
 
 #-------------------------------------------------------------------------------------------------------------------------------------------
 # Low level settings - compiler etc

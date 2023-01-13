@@ -10,6 +10,8 @@
 
 #include "Pandora/StatusCodes.h"
 
+#include <Eigen/Dense>
+
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -34,6 +36,13 @@ public:
     CartesianVector(float x, float y, float z);
 
     /**
+     *  @brief  Constructor, create a vector from an Eigen vector.
+     * 
+     *  @param  v the Eigen::Vector3f.
+     */
+    CartesianVector(const Eigen::Vector3f &rhs);
+
+    /**
      *  @brief  Copy constructor
      * 
      *  @param  rhs the cartesian vector to copy
@@ -48,6 +57,13 @@ public:
      *  @param  z the z coordinate
      */
     void SetValues(float x, float y, float z);
+
+    /**
+     *  @brief  Get the underlying Eigen vector.
+     * 
+     *  @return The Eigen::Vector3f
+     */
+    Eigen::Vector3f GetV() const;
 
     /**
      *  @brief  Get the cartesian x coordinate
@@ -190,9 +206,7 @@ public:
     bool operator==(const CartesianVector &rhs) const;
 
 private:
-    float   m_x;                ///< The x coordinate
-    float   m_y;                ///< The y coordinate
-    float   m_z;                ///< The z coordinate
+    Eigen::Vector3f m_v;
 };
 
 /**
@@ -230,18 +244,21 @@ std::ostream &operator<<(std::ostream & stream, const CartesianVector& cartesian
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline CartesianVector::CartesianVector(float x, float y, float z) :
-    m_x(x),
-    m_y(y),
-    m_z(z)
+    m_v(x, y, z)
 {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline CartesianVector::CartesianVector(const CartesianVector &rhs) :
-    m_x(rhs.m_x),
-    m_y(rhs.m_y),
-    m_z(rhs.m_z)
+    m_v(rhs.m_v)
+{
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+inline CartesianVector::CartesianVector(const Eigen::Vector3f &rhs) :
+    m_v(rhs)
 {
 }
 
@@ -249,60 +266,63 @@ inline CartesianVector::CartesianVector(const CartesianVector &rhs) :
 
 inline void CartesianVector::SetValues(float x, float y, float z)
 {
-    m_x = x;
-    m_y = y;
-    m_z = z;
+    m_v = Eigen::Vector3f(x, y, z);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+inline Eigen::Vector3f CartesianVector::GetV() const
+{
+    return m_v;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline float CartesianVector::GetX() const
 {
-    return m_x;
+    return m_v.x();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline float CartesianVector::GetY() const
 {
-    return m_y;
+    return m_v.y();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline float CartesianVector::GetZ() const
 {
-    return m_z;
+    return m_v.z();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline float CartesianVector::GetMagnitude() const
 {
-    return std::sqrt(this->GetMagnitudeSquared());
+    return m_v.norm();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline float CartesianVector::GetMagnitudeSquared() const
 {
-    return ((m_x * m_x) + (m_y * m_y) + (m_z * m_z));
+    return m_v.squaredNorm();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline float CartesianVector::GetDotProduct(const CartesianVector &rhs) const
 {
-    return ((m_x * rhs.m_x) + (m_y * rhs.m_y) + (m_z * rhs.m_z));
+    return m_v.dot(rhs.m_v);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline CartesianVector CartesianVector::GetCrossProduct(const CartesianVector &rhs) const
 {
-    return CartesianVector( (m_y * rhs.m_z) - (rhs.m_y * m_z),
-                            (m_z * rhs.m_x) - (rhs.m_z * m_x),
-                            (m_x * rhs.m_y) - (rhs.m_x * m_y));
+    return CartesianVector(m_v.cross(rhs.m_v));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -316,16 +336,16 @@ inline float CartesianVector::GetOpeningAngle(const CartesianVector &rhs) const
 
 inline float CartesianVector::GetDistanceSquared(const CartesianVector &rhs) const
 {
-    return (  (m_x - rhs.m_x) * (m_x - rhs.m_x)
-            + (m_y - rhs.m_y) * (m_y - rhs.m_y)
-            + (m_z - rhs.m_z) * (m_z - rhs.m_z));
+    return (  (GetX() - rhs.GetX()) * (GetX() - rhs.GetX())
+            + (GetY() - rhs.GetY()) * (GetY() - rhs.GetY())
+            + (GetZ() - rhs.GetZ()) * (GetZ() - rhs.GetZ()));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline CartesianVector &CartesianVector::operator=(const CartesianVector &rhs)
 {
-    this->SetValues(rhs.m_x, rhs.m_y, rhs.m_z);
+    this->SetValues(rhs.GetX(), rhs.GetY(), rhs.GetZ());
     return *this;
 }
 
@@ -333,7 +353,7 @@ inline CartesianVector &CartesianVector::operator=(const CartesianVector &rhs)
 
 inline CartesianVector &CartesianVector::operator+=(const CartesianVector &rhs)
 {
-    this->SetValues(m_x + rhs.m_x, m_y + rhs.m_y, m_z + rhs.m_z);
+    m_v += rhs.m_v;
     return *this;
 }
 
@@ -341,7 +361,7 @@ inline CartesianVector &CartesianVector::operator+=(const CartesianVector &rhs)
 
 inline CartesianVector &CartesianVector::operator-=(const CartesianVector &rhs)
 {
-    this->SetValues(m_x - rhs.m_x, m_y - rhs.m_y, m_z - rhs.m_z);
+    m_v -= rhs.m_v;
     return *this;
 }
 
@@ -349,7 +369,7 @@ inline CartesianVector &CartesianVector::operator-=(const CartesianVector &rhs)
 
 inline CartesianVector &CartesianVector::operator*=(const double scalar)
 {
-    this->SetValues(static_cast<float>(m_x * scalar), static_cast<float>(m_y * scalar), static_cast<float>(m_z * scalar));
+    m_v *= scalar;
     return *this;
 }
 
@@ -357,9 +377,7 @@ inline CartesianVector &CartesianVector::operator*=(const double scalar)
 
 inline bool CartesianVector::operator==(const CartesianVector &rhs) const
 {
-    return ( (std::fabs(m_x - rhs.m_x) < std::numeric_limits<float>::epsilon()) &&
-        (std::fabs(m_y - rhs.m_y) < std::numeric_limits<float>::epsilon()) &&
-        (std::fabs(m_z - rhs.m_z) < std::numeric_limits<float>::epsilon()) );
+    return m_v == rhs.m_v;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -367,21 +385,21 @@ inline bool CartesianVector::operator==(const CartesianVector &rhs) const
 
 inline CartesianVector operator+(const CartesianVector &lhs, const CartesianVector &rhs)
 {
-    return CartesianVector(lhs.GetX() + rhs.GetX(), lhs.GetY() + rhs.GetY(), lhs.GetZ() + rhs.GetZ());
+    return CartesianVector(lhs.GetV() + rhs.GetV());
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline CartesianVector operator-(const CartesianVector &lhs, const CartesianVector &rhs)
 {
-    return CartesianVector(lhs.GetX() - rhs.GetX(), lhs.GetY() - rhs.GetY(), lhs.GetZ() - rhs.GetZ());
+    return CartesianVector(lhs.GetV() - rhs.GetV());
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline CartesianVector operator*(const CartesianVector &lhs, const double scalar)
 {
-    return CartesianVector(static_cast<float>(lhs.GetX() * scalar), static_cast<float>(lhs.GetY() * scalar), static_cast<float>(lhs.GetZ() * scalar));
+    return CartesianVector(lhs.GetV() * scalar);
 }
 
 } // namespace pandora
