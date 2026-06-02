@@ -10,6 +10,8 @@
 
 #include "Api/PandoraApi.h"
 
+#include <vector>
+
 namespace pandora
 {
 
@@ -54,6 +56,45 @@ private:
      *  @return the address of the event context object
      */
     const EventContextObject *GetEventContextObject(const std::string &key) const;
+
+    /**
+     *  @brief  Check whether an event context key exists
+     *
+     *  @param  key the key to test
+     *
+     *  @return true if the key exists
+     */
+    bool DoesEventContextKeyExist(const std::string &key) const;
+
+    /**
+     *  @brief  Get all event context keys currently present
+     *
+     *  @param  keys to receive the list of keys
+     */
+    void GetEventContextKeys(std::vector<std::string> &keys) const;
+
+    /**
+     *  @brief  Adds an EventContextObject object to this event context.
+     *
+     *  @param  key the key to associate with the event context object
+     *  @param  pObject the object to be stored
+     */
+    void AddEventContextObject(const std::string &key, const EventContextObject *const pObject) const;
+
+    /**
+     *  @brief  Replaces an EventContextObject object within this event context.
+     *
+     *  @param  key the key of the event context object to replace
+     *  @param  pObject the new object to be stored
+     */
+    void ReplaceEventContextObject(const std::string &key, const EventContextObject *const pObject) const;
+
+    /**
+     *  @brief  Remove an EventContextObject object from this event context.
+     *
+     *  @param  key the key of the event context object to be removed
+     */
+    void RemoveEventContextObject(const std::string &key) const;
 
     /**
      *  @brief  Read pandora settings

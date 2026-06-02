@@ -12,6 +12,8 @@
 #include "Pandora/Pandora.h"
 #include "Pandora/PandoraObjectFactories.h"
 
+#include <vector>
+
 namespace pandora
 {
 class AlgorithmFactory;
@@ -72,6 +74,51 @@ public:
      *  @return the address of the event context object
      */
     static const pandora::EventContextObject *GetEventContextObject(const pandora::Pandora &pandora, const std::string &key);
+
+    /**
+     *  @brief  Check whether a specified event context key exists
+     *
+     *  @param  pandora the pandora instance
+     *  @param  key the key to test
+     *
+     *  @return true if the key exists
+     */
+    static bool DoesEventContextKeyExist(const pandora::Pandora &pandora, const std::string &key);
+
+    /**
+     *  @brief  Get all event context keys currently present
+     *
+     *  @param  pandora the pandora instance
+     *  @param  keys to receive the list of keys
+     */
+    static void GetEventContextKeys(const pandora::Pandora &pandora, std::vector<std::string> &keys);
+
+    /**
+     *  @brief  Adds an EventContextObject object to this event context.
+     *
+     *  @param  pandora the pandora instance
+     *  @param  key the key to associate with the event context object
+     *  @param  eventObject the object to be stored
+     */
+    static void AddEventContextObject(const pandora::Pandora &pandora, const std::string &key, const pandora::EventContextObject *const eventObject);
+
+    /**
+     *  @brief  Replaces an EventContextObject object within this event context.
+     *
+     *  @param  pandora the pandora instance
+     *  @param  key the key of the event context object to replace
+     *  @param  eventObject the new object to be stored
+     */
+    static void ReplaceEventContextObject(const pandora::Pandora &pandora, const std::string &key,
+        const pandora::EventContextObject *const eventObject);
+
+    /**
+     *  @brief  Remove an EventContextObject object from this event context.
+     *
+     *  @param  pandora the pandora instance
+     *  @param  key the key of the event context object to be removed
+     */
+    static void RemoveEventContextObject(const pandora::Pandora &pandora, const std::string &key);
 
     /**
      *  @brief  Read pandora settings

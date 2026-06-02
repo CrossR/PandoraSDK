@@ -191,6 +191,20 @@ const EventContextObject *Pandora::GetEventContextObject(const std::string &key)
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+bool Pandora::DoesEventContextKeyExist(const std::string &key) const
+{
+    return m_pEventContext->DoesKeyExist(key);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void Pandora::GetEventContextKeys(std::vector<std::string> &keys) const
+{
+    m_pEventContext->GetEventContextKeys(keys);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 const PandoraSettings *Pandora::GetSettings() const
 {
     return m_pPandoraSettings;
@@ -268,7 +282,9 @@ void Pandora::AddEventContextObject(const std::string &key, const EventContextOb
 
 void Pandora::ReplaceEventContextObject(const std::string &key, const EventContextObject *const pObject)
 {
-    m_pEventContext->RemoveEventContextObject(key);
+    if (m_pEventContext->DoesKeyExist(key))
+        m_pEventContext->RemoveEventContextObject(key);
+
     m_pEventContext->AddEventContextObject(key, pObject);
 }
 

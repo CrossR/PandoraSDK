@@ -1,8 +1,8 @@
 /**
  *  @file PandoraSDK/src/Objects/EventContext.cc
- * 
+ *
  *  @brief Implementation of the EventContext class.
- * 
+ *
  *  $Log: $
  */
 
@@ -19,9 +19,10 @@ EventContext::EventContext(const Pandora *const pPandora) :
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 EventContext::EventContext(const EventContext &event) :
-    m_eventObjectMap(event.m_eventObjectMap),
     m_pPandora(event.m_pPandora)
 {
+    for (const auto &[key, pObject] : event.m_eventObjectMap)
+        m_eventObjectMap.emplace(key, pObject ? pObject->Clone() : nullptr);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -57,14 +58,29 @@ void EventContext::RemoveEventContextObject(const std::string &key)
     if (iter == m_eventObjectMap.end())
         throw StatusCodeException(STATUS_CODE_NOT_FOUND);
 
+    delete iter->second;
     m_eventObjectMap.erase(iter);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
-  
+
 bool EventContext::DoesKeyExist(const std::string &key) const
 {
     return m_eventObjectMap.find(key) != m_eventObjectMap.end();
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void EventContext::GetEventContextKeys(std::vector<std::string> &keys) const
+{
+    keys.clear();
+    keys.reserve(m_eventObjectMap.size());
+
+    for (const auto &[key, pObject] : m_eventObjectMap)
+    {
+        (void) pObject;
+        keys.push_back(key);
+    }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,4 +95,3 @@ StatusCode EventContext::ResetForNextEvent()
 }
 
 } // namespace pandora
-

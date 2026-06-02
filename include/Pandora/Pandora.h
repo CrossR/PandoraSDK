@@ -12,6 +12,7 @@
 #include "Pandora/StatusCodes.h"
 
 #include <string>
+#include <vector>
 
 namespace pandora
 {
@@ -72,10 +73,26 @@ public:
      *  @brief  Get the pandora event instance
      *
      *  @param  key the key associated with the desired event context object
-     * 
+     *
      *  @return the address of the pandora event instance
      */
     const EventContextObject *GetEventContextObject(const std::string &key) const;
+
+    /**
+     *  @brief  Check whether an event context key is present
+     *
+     *  @param  key the key to test
+     *
+     *  @return true if the key is present
+     */
+    bool DoesEventContextKeyExist(const std::string &key) const;
+
+    /**
+     *  @brief  Get all event context keys currently present
+     *
+     *  @param  keys to receive the list of keys
+     */
+    void GetEventContextKeys(std::vector<std::string> &keys) const;
 
     /**
      *  @brief  Get the pandora settings instance

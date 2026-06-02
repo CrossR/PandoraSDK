@@ -33,6 +33,43 @@ const pandora::EventContextObject *PandoraApi::GetEventContextObject(const pando
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+bool PandoraApi::DoesEventContextKeyExist(const pandora::Pandora &pandora, const std::string &key)
+{
+    return pandora.GetPandoraApiImpl()->DoesEventContextKeyExist(key);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void PandoraApi::GetEventContextKeys(const pandora::Pandora &pandora, std::vector<std::string> &keys)
+{
+    pandora.GetPandoraApiImpl()->GetEventContextKeys(keys);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void PandoraApi::AddEventContextObject(
+    const pandora::Pandora &pandora, const std::string &key, const pandora::EventContextObject *const eventObject)
+{
+    pandora.GetPandoraApiImpl()->AddEventContextObject(key, eventObject);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void PandoraApi::ReplaceEventContextObject(
+    const pandora::Pandora &pandora, const std::string &key, const pandora::EventContextObject *const eventObject)
+{
+    pandora.GetPandoraApiImpl()->ReplaceEventContextObject(key, eventObject);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void PandoraApi::RemoveEventContextObject(const pandora::Pandora &pandora, const std::string &key)
+{
+    pandora.GetPandoraApiImpl()->RemoveEventContextObject(key);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 pandora::StatusCode PandoraApi::ReadSettings(const pandora::Pandora &pandora, const std::string &xmlFileName)
 {
     return pandora.GetPandoraApiImpl()->ReadSettings(xmlFileName);

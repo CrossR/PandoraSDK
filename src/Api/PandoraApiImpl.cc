@@ -118,6 +118,41 @@ const EventContextObject *PandoraApiImpl::GetEventContextObject(const std::strin
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+bool PandoraApiImpl::DoesEventContextKeyExist(const std::string &key) const
+{
+    return m_pPandora->DoesEventContextKeyExist(key);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void PandoraApiImpl::GetEventContextKeys(std::vector<std::string> &keys) const
+{
+    m_pPandora->GetEventContextKeys(keys);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void PandoraApiImpl::AddEventContextObject(const std::string &key, const EventContextObject *const pObject) const
+{
+    m_pPandora->AddEventContextObject(key, pObject);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void PandoraApiImpl::ReplaceEventContextObject(const std::string &key, const EventContextObject *const pObject) const
+{
+    m_pPandora->ReplaceEventContextObject(key, pObject);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void PandoraApiImpl::RemoveEventContextObject(const std::string &key) const
+{
+    m_pPandora->RemoveEventContextObject(key);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 StatusCode PandoraApiImpl::ReadSettings(const std::string &xmlFileName) const
 {
     return m_pPandora->ReadSettings(xmlFileName);

@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/include/Objects/EventContext.h
- * 
+ *
  *  @brief  Header file of the EventContext class.
- * 
+ *
  *  $Log: $
  */
 #ifndef EVENT_H
@@ -11,6 +11,7 @@
 #include "Pandora/StatusCodes.h"
 
 #include <map>
+#include <vector>
 
 namespace pandora
 {
@@ -30,14 +31,14 @@ class EventContext
 public:
     /**
      *  @brief  Constructor
-     * 
+     *
      *  @param  pPandora address of the associated pandora object
      */
     EventContext(const Pandora *const pPandora);
 
     /**
      *  @brief  Copy constructor
-     * 
+     *
      *  @param  event the event object to be copied
      */
     EventContext(const EventContext &event);
@@ -69,7 +70,7 @@ public:
     *  @return the event object associated with the specified key
     */
    const EventContextObject *GetEventContextObject(const std::string &key) const;
-   
+
     /**
     *  @brief  Checks if an EventContextObject object is associated with a key.
     *
@@ -77,6 +78,13 @@ public:
     *  @return true if there is an event object associated with the specified key
     */
    bool DoesKeyExist(const std::string &key) const;
+
+    /**
+     *  @brief  Retrieve all keys currently present in the event context.
+     *
+     *  @param  keys to receive the available keys
+     */
+    void GetEventContextKeys(std::vector<std::string> &keys) const;
 
    // Needs persistency functions
 
@@ -113,6 +121,13 @@ public:
      *  @brief  Destructor
      */
     virtual ~EventContextObject() = default;
+
+    /**
+     *  @brief  Clone this object.
+     *
+     *  @return a heap-allocated deep copy of this object
+     */
+    virtual const EventContextObject *Clone() const = 0;
 };
 
 } // namespace pandora
