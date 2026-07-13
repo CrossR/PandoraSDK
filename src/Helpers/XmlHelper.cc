@@ -57,7 +57,7 @@ StatusCode XmlHelper::ProcessAlgorithmList(const Algorithm &algorithm, const TiX
         pXmlElement = pXmlElement->NextSiblingElement("algorithm"))
     {
         std::string algorithmName;
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::CreateDaughterAlgorithm(algorithm, pXmlElement, algorithmName));
+        PandoraReturnOnError(PandoraContentApi::CreateDaughterAlgorithm(algorithm, pXmlElement, algorithmName));
         algorithmNames.push_back(algorithmName);
     }
 
@@ -110,7 +110,7 @@ StatusCode XmlHelper::ProcessAlgorithmToolList(const Algorithm &algorithm, const
         pXmlElement = pXmlElement->NextSiblingElement("tool"))
     {
         AlgorithmTool *pAlgorithmTool(nullptr);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::CreateAlgorithmTool(algorithm, pXmlElement, pAlgorithmTool));
+        PandoraReturnOnError(PandoraContentApi::CreateAlgorithmTool(algorithm, pXmlElement, pAlgorithmTool));
         algorithmToolVector.push_back(pAlgorithmTool);
     }
 

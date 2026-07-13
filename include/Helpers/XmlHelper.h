@@ -36,6 +36,37 @@ public:
     static StatusCode ReadValue(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, T &t);
 
     /**
+     *  @brief  Read a required value from an xml element
+     *
+     *  @param  xmlHandle the relevant xml handle
+     *  @param  xmlElementName the name of the xml element to examine
+     *  @param  t to receive the value
+     */
+    template <typename T>
+    static StatusCode ReadRequired(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, T &t);
+
+    /**
+     *  @brief  Read an optional value from an xml element
+     *
+     *  @param  xmlHandle the relevant xml handle
+     *  @param  xmlElementName the name of the xml element to examine
+     *  @param  t to receive the value
+     */
+    template <typename T>
+    static StatusCode ReadOptional(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, T &t);
+
+    /**
+     *  @brief  Read an optional value from an xml element, applying a fallback when the element is missing
+     *
+     *  @param  xmlHandle the relevant xml handle
+     *  @param  xmlElementName the name of the xml element to examine
+     *  @param  fallback the fallback value to use when the element is missing
+     *  @param  t to receive the value
+     */
+    template <typename T>
+    static StatusCode ReadOptionalOr(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, const T &fallback, T &t);
+
+    /**
      *  @brief  Read a vector of values from a (space separated) list in an xml element
      * 
      *  @param  xmlHandle the relevant xml handle
@@ -44,6 +75,26 @@ public:
      */
     template <typename T>
     static StatusCode ReadVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector);
+
+    /**
+     *  @brief  Read a required vector of values from an xml element
+     *
+     *  @param  xmlHandle the relevant xml handle
+     *  @param  xmlElementName the name of the xml element to examine
+     *  @param  vector to receive the vector of values
+     */
+    template <typename T>
+    static StatusCode ReadRequiredVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector);
+
+    /**
+     *  @brief  Read an optional vector of values from an xml element
+     *
+     *  @param  xmlHandle the relevant xml handle
+     *  @param  xmlElementName the name of the xml element to examine
+     *  @param  vector to receive the vector of values
+     */
+    template <typename T>
+    static StatusCode ReadOptionalVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector);
 
     /**
      *  @brief  Read a two-dimensional array of values into a vector of vectors. Each row of values must be contained
@@ -144,6 +195,33 @@ inline StatusCode XmlHelper::ReadValue(const TiXmlHandle &xmlHandle, const std::
         return STATUS_CODE_FAILURE;
 
     return STATUS_CODE_SUCCESS;
+}
+
+template <typename T>
+inline StatusCode XmlHelper::ReadRequired(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, T &t)
+{
+    return XmlHelper::ReadValue(xmlHandle, xmlElementName, t);
+}
+
+template <typename T>
+inline StatusCode XmlHelper::ReadOptional(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, T &t)
+{
+    const StatusCode statusCode = XmlHelper::ReadValue(xmlHandle, xmlElementName, t);
+    return (STATUS_CODE_NOT_FOUND == statusCode) ? STATUS_CODE_SUCCESS : statusCode;
+}
+
+template <typename T>
+inline StatusCode XmlHelper::ReadOptionalOr(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, const T &fallback, T &t)
+{
+    const StatusCode statusCode = XmlHelper::ReadValue(xmlHandle, xmlElementName, t);
+
+    if (STATUS_CODE_NOT_FOUND == statusCode)
+    {
+        t = fallback;
+        return STATUS_CODE_SUCCESS;
+    }
+
+    return statusCode;
 }
 
 template <>
@@ -247,6 +325,19 @@ inline StatusCode XmlHelper::ReadVectorOfValues(const TiXmlHandle &xmlHandle, co
     }
 
     return STATUS_CODE_SUCCESS;
+}
+
+template <typename T>
+inline StatusCode XmlHelper::ReadRequiredVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector)
+{
+    return XmlHelper::ReadVectorOfValues(xmlHandle, xmlElementName, vector);
+}
+
+template <typename T>
+inline StatusCode XmlHelper::ReadOptionalVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector)
+{
+    const StatusCode statusCode = XmlHelper::ReadVectorOfValues(xmlHandle, xmlElementName, vector);
+    return (STATUS_CODE_NOT_FOUND == statusCode) ? STATUS_CODE_SUCCESS : statusCode;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
