@@ -104,9 +104,9 @@ Pandora::~Pandora()
 
 StatusCode Pandora::PrepareEvent()
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandoraImpl->PrepareMCParticles());
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandoraImpl->PrepareCaloHits());
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandoraImpl->PrepareTracks());
+    PandoraReturnOnError(m_pPandoraImpl->PrepareMCParticles());
+    PandoraReturnOnError(m_pPandoraImpl->PrepareCaloHits());
+    PandoraReturnOnError(m_pPandoraImpl->PrepareTracks());
 
     return STATUS_CODE_SUCCESS;
 }
@@ -115,13 +115,13 @@ StatusCode Pandora::PrepareEvent()
 
 StatusCode Pandora::ProcessEvent()
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->PrepareEvent());
+    PandoraReturnOnError(this->PrepareEvent());
 
     // Loop over algorithms
     const StringVector &pandoraAlgorithms(m_pPandoraImpl->GetPandoraAlgorithms());
 
     for (const std::string &algorithmName : pandoraAlgorithms)
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandoraImpl->RunAlgorithm(algorithmName));
+        PandoraReturnOnError(m_pPandoraImpl->RunAlgorithm(algorithmName));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -153,9 +153,9 @@ StatusCode Pandora::ReadSettings(const std::string &xmlFileName)
         const TiXmlHandle xmlDocumentHandle(&xmlDocument);
         const TiXmlHandle xmlHandle(TiXmlHandle(xmlDocumentHandle.FirstChildElement().Element()));
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandoraImpl->InitializeSettings(&xmlHandle));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandoraImpl->InitializeAlgorithms(&xmlHandle));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandoraImpl->InitializePlugins(&xmlHandle));
+        PandoraThrowOnError(m_pPandoraImpl->InitializeSettings(&xmlHandle));
+        PandoraThrowOnError(m_pPandoraImpl->InitializeAlgorithms(&xmlHandle));
+        PandoraThrowOnError(m_pPandoraImpl->InitializePlugins(&xmlHandle));
     }
     catch (StatusCodeException &statusCodeException)
     {

@@ -91,7 +91,7 @@ ParticleId::~ParticleId()
 
 StatusCode ParticleId::RegisterPlugin(const std::string &name, ParticleIdPlugin *const pParticleIdPlugin)
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, pParticleIdPlugin->RegisterDetails(m_pPandora, name, name));
+    PandoraReturnOnError(pParticleIdPlugin->RegisterDetails(m_pPandora, name, name));
 
     if (!m_particleIdPluginMap.insert(ParticleIdPluginMap::value_type(name, pParticleIdPlugin)).second)
         return STATUS_CODE_ALREADY_PRESENT;
@@ -108,15 +108,15 @@ StatusCode ParticleId::InitializePlugins(const TiXmlHandle *const pXmlHandle)
         TiXmlElement *pXmlElement(pXmlHandle->FirstChild(mapEntry.first).Element());
 
         if (nullptr != pXmlElement)
-            PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, mapEntry.second->ReadSettings(TiXmlHandle(pXmlElement)));
+            PandoraReturnOnError(mapEntry.second->ReadSettings(TiXmlHandle(pXmlElement)));
 
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, mapEntry.second->Initialize());
+        PandoraReturnOnError(mapEntry.second->Initialize());
     }
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->InitializePlugin(pXmlHandle, "EmShowerPlugin", m_pEmShowerPlugin));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->InitializePlugin(pXmlHandle, "PhotonPlugin", m_pPhotonPlugin));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->InitializePlugin(pXmlHandle, "ElectronPlugin", m_pElectronPlugin));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->InitializePlugin(pXmlHandle, "MuonPlugin", m_pMuonPlugin));
+    PandoraReturnOnError(this->InitializePlugin(pXmlHandle, "EmShowerPlugin", m_pEmShowerPlugin));
+    PandoraReturnOnError(this->InitializePlugin(pXmlHandle, "PhotonPlugin", m_pPhotonPlugin));
+    PandoraReturnOnError(this->InitializePlugin(pXmlHandle, "ElectronPlugin", m_pElectronPlugin));
+    PandoraReturnOnError(this->InitializePlugin(pXmlHandle, "MuonPlugin", m_pMuonPlugin));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -129,8 +129,8 @@ StatusCode ParticleId::InitializePlugin(const TiXmlHandle *const pXmlHandle, con
         return STATUS_CODE_FAILURE;
 
     std::string requestedPluginName;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        xmlTagName, requestedPluginName));
+    PandoraReturnOnErrorExcept(XmlHelper::ReadValue(*pXmlHandle,
+        xmlTagName, requestedPluginName), STATUS_CODE_NOT_FOUND);
 
     if (requestedPluginName.empty())
         return STATUS_CODE_SUCCESS;
@@ -149,7 +149,7 @@ StatusCode ParticleId::InitializePlugin(const TiXmlHandle *const pXmlHandle, con
 StatusCode ParticleId::ResetForNextEvent()
 {
     for (const ParticleIdPluginMap::value_type &mapEntry : m_particleIdPluginMap)
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, mapEntry.second->Reset());
+        PandoraReturnOnError(mapEntry.second->Reset());
 
     return STATUS_CODE_SUCCESS;
 }

@@ -22,14 +22,14 @@ StatusCode EnergyCorrections::MakeEnergyCorrections(const Cluster *const pCluste
 
     for (const EnergyCorrectionPlugin *const pPlugin : m_hadEnergyCorrectionPlugins)
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, pPlugin->MakeEnergyCorrections(pCluster, correctedHadronicEnergy));
+        PandoraReturnOnError(pPlugin->MakeEnergyCorrections(pCluster, correctedHadronicEnergy));
     }
 
     correctedElectromagneticEnergy = pCluster->GetElectromagneticEnergy();
 
     for (const EnergyCorrectionPlugin *const pPlugin : m_emEnergyCorrectionPlugins)
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, pPlugin->MakeEnergyCorrections(pCluster, correctedElectromagneticEnergy));
+        PandoraReturnOnError(pPlugin->MakeEnergyCorrections(pCluster, correctedElectromagneticEnergy));
     }
 
     return STATUS_CODE_SUCCESS;
@@ -63,7 +63,7 @@ EnergyCorrections::~EnergyCorrections()
 StatusCode EnergyCorrections::RegisterPlugin(const std::string &name, const EnergyCorrectionType energyCorrectionType,
     EnergyCorrectionPlugin *const pEnergyCorrectionPlugin)
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, pEnergyCorrectionPlugin->RegisterDetails(m_pPandora, name, name));
+    PandoraReturnOnError(pEnergyCorrectionPlugin->RegisterDetails(m_pPandora, name, name));
 
     EnergyCorrectionPluginMap &energyCorrectionPluginMap(this->GetEnergyCorrectionPluginMap(energyCorrectionType));
 
@@ -81,9 +81,9 @@ StatusCode EnergyCorrections::InitializePlugins(const TiXmlHandle *const pXmlHan
     {
         TiXmlElement *const pXmlElement(pXmlHandle->FirstChild(mapEntry.first).Element());
         if (nullptr != pXmlElement)
-            PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, mapEntry.second->ReadSettings(TiXmlHandle(pXmlElement)));
+            PandoraReturnOnError(mapEntry.second->ReadSettings(TiXmlHandle(pXmlElement)));
 
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, mapEntry.second->Initialize());
+        PandoraReturnOnError(mapEntry.second->Initialize());
     }
 
     for (EnergyCorrectionPluginMap::value_type &mapEntry : m_emEnergyCorrectionPluginMap)
@@ -91,15 +91,15 @@ StatusCode EnergyCorrections::InitializePlugins(const TiXmlHandle *const pXmlHan
         TiXmlElement *const pXmlElement(pXmlHandle->FirstChild(mapEntry.first).Element());
 
         if (nullptr != pXmlElement)
-            PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, mapEntry.second->ReadSettings(TiXmlHandle(pXmlElement)));
+            PandoraReturnOnError(mapEntry.second->ReadSettings(TiXmlHandle(pXmlElement)));
 
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, mapEntry.second->Initialize());
+        PandoraReturnOnError(mapEntry.second->Initialize());
     }
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->InitializePlugin(pXmlHandle,
+    PandoraReturnOnError(this->InitializePlugin(pXmlHandle,
         "HadronicEnergyCorrectionPlugins", HADRONIC, m_hadEnergyCorrectionPlugins));
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->InitializePlugin(pXmlHandle,
+    PandoraReturnOnError(this->InitializePlugin(pXmlHandle,
         "ElectromagneticEnergyCorrectionPlugins", ELECTROMAGNETIC, m_emEnergyCorrectionPlugins));
 
     return STATUS_CODE_SUCCESS;
@@ -114,8 +114,8 @@ StatusCode EnergyCorrections::InitializePlugin(const TiXmlHandle *const pXmlHand
         return STATUS_CODE_FAILURE;
 
     StringVector requestedPluginNames;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadVectorOfValues(*pXmlHandle,
-        xmlTagName, requestedPluginNames));
+    PandoraReturnOnErrorExcept(XmlHelper::ReadVectorOfValues(*pXmlHandle,
+        xmlTagName, requestedPluginNames), STATUS_CODE_NOT_FOUND);
 
     EnergyCorrectionPluginMap &energyCorrectionPluginMap(this->GetEnergyCorrectionPluginMap(energyCorrectionType));
 
@@ -154,10 +154,10 @@ EnergyCorrections::EnergyCorrectionPluginMap &EnergyCorrections::GetEnergyCorrec
 StatusCode EnergyCorrections::ResetForNextEvent()
 {
     for (const EnergyCorrectionPluginMap::value_type &mapEntry : m_hadEnergyCorrectionPluginMap)
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, mapEntry.second->Reset());
+        PandoraReturnOnError(mapEntry.second->Reset());
 
     for (const EnergyCorrectionPluginMap::value_type &mapEntry : m_emEnergyCorrectionPluginMap)
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, mapEntry.second->Reset());
+        PandoraReturnOnError(mapEntry.second->Reset());
 
     return STATUS_CODE_SUCCESS;
 }

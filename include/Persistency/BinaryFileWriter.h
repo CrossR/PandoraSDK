@@ -83,7 +83,7 @@ template <>
 inline StatusCode BinaryFileWriter::WriteVariable(const std::string &t)
 {
     const unsigned int stringSize(t.size());
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->WriteVariable(stringSize));
+    PandoraReturnOnError(this->WriteVariable(stringSize));
     m_fileStream.write(reinterpret_cast<const char *>(t.c_str()), stringSize);
 
     if (!m_fileStream.good())
@@ -95,17 +95,17 @@ inline StatusCode BinaryFileWriter::WriteVariable(const std::string &t)
 template <>
 inline StatusCode BinaryFileWriter::WriteVariable(const CartesianVector &t)
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->WriteVariable(t.GetX()));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->WriteVariable(t.GetY()));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->WriteVariable(t.GetZ()));
+    PandoraReturnOnError(this->WriteVariable(t.GetX()));
+    PandoraReturnOnError(this->WriteVariable(t.GetY()));
+    PandoraReturnOnError(this->WriteVariable(t.GetZ()));
     return STATUS_CODE_SUCCESS;
 }
 
 template <>
 inline StatusCode BinaryFileWriter::WriteVariable(const TrackState &t)
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->WriteVariable(t.GetPosition()));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->WriteVariable(t.GetMomentum()));
+    PandoraReturnOnError(this->WriteVariable(t.GetPosition()));
+    PandoraReturnOnError(this->WriteVariable(t.GetMomentum()));
     return STATUS_CODE_SUCCESS;
 }
 

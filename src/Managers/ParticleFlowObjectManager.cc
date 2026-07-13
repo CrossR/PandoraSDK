@@ -20,7 +20,7 @@ namespace pandora
 ParticleFlowObjectManager::ParticleFlowObjectManager(const Pandora *const pPandora) :
     AlgorithmObjectManager<ParticleFlowObject>(pPandora)
 {
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->CreateInitialLists());
+    PandoraThrowOnError(this->CreateInitialLists());
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ StatusCode ParticleFlowObjectManager::Create(const object_creation::ParticleFlow
         if (m_nameToListMap.end() == iter)
              throw StatusCodeException(STATUS_CODE_NOT_INITIALIZED);
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, factory.Create(parameters, pPfo));
+        PandoraThrowOnError(factory.Create(parameters, pPfo));
 
         if (!pPfo)
              throw StatusCodeException(STATUS_CODE_FAILURE);
@@ -94,8 +94,8 @@ StatusCode ParticleFlowObjectManager::SetParentDaughterAssociation(const Particl
     if (pParentPfo == pDaughterPfo)
         return STATUS_CODE_INVALID_PARAMETER;
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->Modifiable(pParentPfo)->AddDaughter(pDaughterPfo));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->Modifiable(pDaughterPfo)->AddParent(pParentPfo));
+    PandoraReturnOnError(this->Modifiable(pParentPfo)->AddDaughter(pDaughterPfo));
+    PandoraReturnOnError(this->Modifiable(pDaughterPfo)->AddParent(pParentPfo));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -104,8 +104,8 @@ StatusCode ParticleFlowObjectManager::SetParentDaughterAssociation(const Particl
 
 StatusCode ParticleFlowObjectManager::RemoveParentDaughterAssociation(const ParticleFlowObject *const pParentPfo, const ParticleFlowObject *const pDaughterPfo) const
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->Modifiable(pParentPfo)->RemoveDaughter(pDaughterPfo));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->Modifiable(pDaughterPfo)->RemoveParent(pParentPfo));
+    PandoraReturnOnError(this->Modifiable(pParentPfo)->RemoveDaughter(pDaughterPfo));
+    PandoraReturnOnError(this->Modifiable(pDaughterPfo)->RemoveParent(pParentPfo));
 
     return STATUS_CODE_SUCCESS;
 }

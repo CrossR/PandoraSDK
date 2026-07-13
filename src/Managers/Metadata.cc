@@ -105,7 +105,7 @@ StatusCode CaloHitMetadata::Update(const CaloHitMetadata &caloHitMetadata)
 
     for (const CaloHitReplacement *const pCaloHitReplacement : caloHitReplacementList)
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->Update(*pCaloHitReplacement));
+        PandoraReturnOnError(this->Update(*pCaloHitReplacement));
     }
 
     const CaloHitUsageMap &caloHitUsageMap(caloHitMetadata.GetCaloHitUsageMap());

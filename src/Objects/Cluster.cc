@@ -255,12 +255,12 @@ Cluster::Cluster(const object_creation::Cluster::Parameters &parameters) :
 
     for (const CaloHit *const pCaloHit : parameters.m_caloHitList)
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->AddCaloHit(pCaloHit));
+        PandoraThrowOnError(this->AddCaloHit(pCaloHit));
     }
 
     for (const CaloHit *const pCaloHit : parameters.m_isolatedCaloHitList)
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->AddIsolatedCaloHit(pCaloHit));
+        PandoraThrowOnError(this->AddIsolatedCaloHit(pCaloHit));
     }
 }
 
@@ -287,7 +287,7 @@ StatusCode Cluster::AlterMetadata(const object_creation::Cluster::Metadata &meta
 
 StatusCode Cluster::AddCaloHit(const CaloHit *const pCaloHit)
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_orderedCaloHitList.Add(pCaloHit));
+    PandoraReturnOnError(m_orderedCaloHitList.Add(pCaloHit));
 
     this->ResetOutdatedProperties();
 
@@ -339,7 +339,7 @@ StatusCode Cluster::AddCaloHit(const CaloHit *const pCaloHit)
 
 StatusCode Cluster::RemoveCaloHit(const CaloHit *const pCaloHit)
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_orderedCaloHitList.Remove(pCaloHit));
+    PandoraReturnOnError(m_orderedCaloHitList.Remove(pCaloHit));
 
     if (m_orderedCaloHitList.empty())
         return this->ResetProperties();
@@ -500,7 +500,7 @@ void Cluster::UpdateEnergyCorrectionsCache(const Pandora &pandora) const
     const ParticleId *const pParticleId(pandora.GetPlugins()->GetParticleId());
 
     float correctedElectromagneticEnergy(0.f), correctedHadronicEnergy(0.f), trackComparisonEnergy(0.f);
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, pEnergyCorrections->MakeEnergyCorrections(this, correctedElectromagneticEnergy,
+    PandoraThrowOnError(pEnergyCorrections->MakeEnergyCorrections(this, correctedElectromagneticEnergy,
         correctedHadronicEnergy));
 
     if (pParticleId->IsEmShower(this))
@@ -616,7 +616,7 @@ StatusCode Cluster::AddHitsFromSecondCluster(const Cluster *const pCluster)
         return STATUS_CODE_NOT_ALLOWED;
 
     const OrderedCaloHitList &orderedCaloHitList(pCluster->GetOrderedCaloHitList());
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_orderedCaloHitList.Add(orderedCaloHitList));
+    PandoraReturnOnError(m_orderedCaloHitList.Add(orderedCaloHitList));
 
     const CaloHitList &isolatedCaloHitList(pCluster->GetIsolatedCaloHitList());
     for (const CaloHit *const pCaloHit : isolatedCaloHitList)

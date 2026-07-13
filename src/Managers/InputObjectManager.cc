@@ -57,8 +57,8 @@ template<typename T>
 StatusCode InputObjectManager<T>::CreateTemporaryListAndSetCurrent(const Algorithm *const pAlgorithm, const ObjectList &objectList,
     std::string &temporaryListName)
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, Manager<T>::CreateTemporaryListAndSetCurrent(pAlgorithm, temporaryListName));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->AddObjectsToList(temporaryListName, objectList));
+    PandoraReturnOnError(Manager<T>::CreateTemporaryListAndSetCurrent(pAlgorithm, temporaryListName));
+    PandoraReturnOnError(this->AddObjectsToList(temporaryListName, objectList));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -180,7 +180,7 @@ StatusCode InputObjectManager<T>::EraseAllContent()
 template<typename T>
 StatusCode InputObjectManager<T>::CreateInitialLists()
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, Manager<T>::CreateInitialLists());
+    PandoraReturnOnError(Manager<T>::CreateInitialLists());
     Manager<T>::m_nameToListMap[m_inputListName] = new ObjectList;
     Manager<T>::m_savedLists.insert(m_inputListName);
 

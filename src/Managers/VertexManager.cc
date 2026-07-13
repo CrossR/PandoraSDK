@@ -20,7 +20,7 @@ namespace pandora
 VertexManager::VertexManager(const Pandora *const pPandora) :
     AlgorithmObjectManager<Vertex>(pPandora)
 {
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->CreateInitialLists());
+    PandoraThrowOnError(this->CreateInitialLists());
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ StatusCode VertexManager::Create(const object_creation::Vertex::Parameters &para
         if (m_nameToListMap.end() == iter)
              throw StatusCodeException(STATUS_CODE_NOT_INITIALIZED);
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, factory.Create(parameters, pVertex));
+        PandoraThrowOnError(factory.Create(parameters, pVertex));
 
         if (!pVertex)
              throw StatusCodeException(STATUS_CODE_FAILURE);

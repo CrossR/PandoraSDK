@@ -49,8 +49,8 @@ StatusCode AlgorithmObjectManager<T>::MoveObjectsToTemporaryListAndSetCurrent(co
     if (objectsToMove.empty())
         return STATUS_CODE_NOT_INITIALIZED;
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->CreateTemporaryListAndSetCurrent(pAlgorithm, temporaryListName));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->MoveObjectsBetweenLists(temporaryListName, originalListName, &objectsToMove));
+    PandoraReturnOnError(this->CreateTemporaryListAndSetCurrent(pAlgorithm, temporaryListName));
+    PandoraReturnOnError(this->MoveObjectsBetweenLists(temporaryListName, originalListName, &objectsToMove));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -304,7 +304,7 @@ template<typename T>
 StatusCode AlgorithmObjectManager<T>::ResetAlgorithmInfo(const Algorithm *const pAlgorithm, bool isAlgorithmFinished)
 {
     ObjectList objectList;
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->GetResetDeletionObjects(pAlgorithm, objectList));
+    PandoraReturnOnError(this->GetResetDeletionObjects(pAlgorithm, objectList));
 
     for (const T *const pT : objectList)
         delete pT;

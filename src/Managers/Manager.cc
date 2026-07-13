@@ -246,8 +246,8 @@ StatusCode Manager<T>::ResetAlgorithmInfo(const Algorithm *const pAlgorithm, boo
 template<typename T>
 StatusCode Manager<T>::ResetForNextEvent()
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->EraseAllContent());
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->CreateInitialLists());
+    PandoraReturnOnError(this->EraseAllContent());
+    PandoraReturnOnError(this->CreateInitialLists());
 
     return STATUS_CODE_SUCCESS;
 }

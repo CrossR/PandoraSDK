@@ -115,7 +115,7 @@ StatusCode XmlFileReader::GoToGeometry(const unsigned int geometryNumber)
 
     while (nGeometriesRead < static_cast<int>(geometryNumber))
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->GoToNextGeometry());
+        PandoraReturnOnError(this->GoToNextGeometry());
         ++nGeometriesRead;
     }
 
@@ -136,7 +136,7 @@ StatusCode XmlFileReader::GoToEvent(const unsigned int eventNumber)
 
     while (nEventsRead < static_cast<int>(eventNumber))
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->GoToNextEvent());
+        PandoraReturnOnError(this->GoToNextEvent());
         ++nEventsRead;
     }
 
@@ -172,7 +172,7 @@ StatusCode XmlFileReader::ReadNextGlobalHeaderComponent()
 
     if (std::string("Version") == componentName)
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVersion());
+        PandoraReturnOnError(this->ReadVersion());
     }
     else
     {
@@ -285,8 +285,8 @@ StatusCode XmlFileReader::ReadVersion()
     if (HEADER_CONTAINER != m_containerId)
         return STATUS_CODE_FAILURE;
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("MajorVersion", m_fileMajorVersion));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("MinorVersion", m_fileMinorVersion));
+    PandoraReturnOnError(this->ReadVariable("MajorVersion", m_fileMajorVersion));
+    PandoraReturnOnError(this->ReadVariable("MinorVersion", m_fileMinorVersion));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -302,33 +302,33 @@ StatusCode XmlFileReader::ReadSubDetector()
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pSubDetectorFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pSubDetectorFactory->Read(*pParameters, *this));
 
         std::string subDetectorName;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("SubDetectorName", subDetectorName));
+        PandoraThrowOnError(this->ReadVariable("SubDetectorName", subDetectorName));
         unsigned int subDetectorTypeInput(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("SubDetectorType", subDetectorTypeInput));
+        PandoraThrowOnError(this->ReadVariable("SubDetectorType", subDetectorTypeInput));
         const SubDetectorType subDetectorType(static_cast<SubDetectorType>(subDetectorTypeInput));
         float innerRCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("InnerRCoordinate", innerRCoordinate));
+        PandoraThrowOnError(this->ReadVariable("InnerRCoordinate", innerRCoordinate));
         float innerZCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("InnerZCoordinate", innerZCoordinate));
+        PandoraThrowOnError(this->ReadVariable("InnerZCoordinate", innerZCoordinate));
         float innerPhiCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("InnerPhiCoordinate", innerPhiCoordinate));
+        PandoraThrowOnError(this->ReadVariable("InnerPhiCoordinate", innerPhiCoordinate));
         unsigned int innerSymmetryOrder(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("InnerSymmetryOrder", innerSymmetryOrder));
+        PandoraThrowOnError(this->ReadVariable("InnerSymmetryOrder", innerSymmetryOrder));
         float outerRCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("OuterRCoordinate", outerRCoordinate));
+        PandoraThrowOnError(this->ReadVariable("OuterRCoordinate", outerRCoordinate));
         float outerZCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("OuterZCoordinate", outerZCoordinate));
+        PandoraThrowOnError(this->ReadVariable("OuterZCoordinate", outerZCoordinate));
         float outerPhiCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("OuterPhiCoordinate", outerPhiCoordinate));
+        PandoraThrowOnError(this->ReadVariable("OuterPhiCoordinate", outerPhiCoordinate));
         unsigned int outerSymmetryOrder(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("OuterSymmetryOrder", outerSymmetryOrder));
+        PandoraThrowOnError(this->ReadVariable("OuterSymmetryOrder", outerSymmetryOrder));
         bool isMirroredInZ(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("IsMirroredInZ", isMirroredInZ));
+        PandoraThrowOnError(this->ReadVariable("IsMirroredInZ", isMirroredInZ));
         unsigned int nLayers(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("NLayers", nLayers));
+        PandoraThrowOnError(this->ReadVariable("NLayers", nLayers));
 
         pParameters->m_subDetectorName = subDetectorName;
         pParameters->m_subDetectorType = subDetectorType;
@@ -346,9 +346,9 @@ StatusCode XmlFileReader::ReadSubDetector()
         if (nLayers > 0)
         {
             FloatVector closestDistanceToIp, nRadiationLengths, nInteractionLengths;
-            PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("ClosestDistanceToIp", closestDistanceToIp));
-            PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("NRadiationLengths", nRadiationLengths));
-            PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("NInteractionLengths", nInteractionLengths));
+            PandoraThrowOnError(this->ReadVariable("ClosestDistanceToIp", closestDistanceToIp));
+            PandoraThrowOnError(this->ReadVariable("NRadiationLengths", nRadiationLengths));
+            PandoraThrowOnError(this->ReadVariable("NInteractionLengths", nInteractionLengths));
 
             if ((closestDistanceToIp.size() != nLayers) || (nRadiationLengths.size() != nLayers) || (nInteractionLengths.size() != nLayers))
                 throw StatusCodeException(STATUS_CODE_FAILURE);
@@ -363,7 +363,7 @@ StatusCode XmlFileReader::ReadSubDetector()
             }
         }
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::SubDetector::Create(*m_pPandora, *pParameters, *m_pSubDetectorFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::SubDetector::Create(*m_pPandora, *pParameters, *m_pSubDetectorFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -386,38 +386,38 @@ StatusCode XmlFileReader::ReadLArTPC()
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pLArTPCFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pLArTPCFactory->Read(*pParameters, *this));
 
         unsigned int larTPCVolumeId;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("LArTPCVolumeId", larTPCVolumeId));
+        PandoraThrowOnError(this->ReadVariable("LArTPCVolumeId", larTPCVolumeId));
         float centerX(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CenterX", centerX));
+        PandoraThrowOnError(this->ReadVariable("CenterX", centerX));
         float centerY(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CenterY", centerY));
+        PandoraThrowOnError(this->ReadVariable("CenterY", centerY));
         float centerZ(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CenterZ", centerZ));
+        PandoraThrowOnError(this->ReadVariable("CenterZ", centerZ));
         float widthX(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("WidthX", widthX));
+        PandoraThrowOnError(this->ReadVariable("WidthX", widthX));
         float widthY(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("WidthY", widthY));
+        PandoraThrowOnError(this->ReadVariable("WidthY", widthY));
         float widthZ(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("WidthZ", widthZ));
+        PandoraThrowOnError(this->ReadVariable("WidthZ", widthZ));
         float wirePitchU(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("WirePitchU", wirePitchU));
+        PandoraThrowOnError(this->ReadVariable("WirePitchU", wirePitchU));
         float wirePitchV(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("WirePitchV", wirePitchV));
+        PandoraThrowOnError(this->ReadVariable("WirePitchV", wirePitchV));
         float wirePitchW(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("WirePitchW", wirePitchW));
+        PandoraThrowOnError(this->ReadVariable("WirePitchW", wirePitchW));
         float wireAngleU(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("WireAngleU", wireAngleU));
+        PandoraThrowOnError(this->ReadVariable("WireAngleU", wireAngleU));
         float wireAngleV(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("WireAngleV", wireAngleV));
+        PandoraThrowOnError(this->ReadVariable("WireAngleV", wireAngleV));
         float wireAngleW(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("WireAngleW", wireAngleW));
+        PandoraThrowOnError(this->ReadVariable("WireAngleW", wireAngleW));
         float sigmaUVW(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("SigmaUVW", sigmaUVW));
+        PandoraThrowOnError(this->ReadVariable("SigmaUVW", sigmaUVW));
         bool isDriftInPositiveX(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("IsDriftInPositiveX", isDriftInPositiveX));
+        PandoraThrowOnError(this->ReadVariable("IsDriftInPositiveX", isDriftInPositiveX));
 
         pParameters->m_larTPCVolumeId = larTPCVolumeId;
         pParameters->m_centerX = centerX;
@@ -435,7 +435,7 @@ StatusCode XmlFileReader::ReadLArTPC()
         pParameters->m_sigmaUVW = sigmaUVW;
         pParameters->m_isDriftInPositiveX = isDriftInPositiveX;
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::LArTPC::Create(*m_pPandora, *pParameters, *m_pLArTPCFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::LArTPC::Create(*m_pPandora, *pParameters, *m_pLArTPCFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -458,26 +458,26 @@ StatusCode XmlFileReader::ReadLineGap()
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pLineGapFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pLineGapFactory->Read(*pParameters, *this));
 
         unsigned int lineGapTypeInput(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("LineGapType", lineGapTypeInput));
+        PandoraThrowOnError(this->ReadVariable("LineGapType", lineGapTypeInput));
         const LineGapType lineGapType(static_cast<LineGapType>(lineGapTypeInput));
         float lineStartX(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("LineStartX", lineStartX));
+        PandoraThrowOnError(this->ReadVariable("LineStartX", lineStartX));
         float lineEndX(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("LineEndX", lineEndX));
+        PandoraThrowOnError(this->ReadVariable("LineEndX", lineEndX));
         float lineStartZ(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("LineStartZ", lineStartZ));
+        PandoraThrowOnError(this->ReadVariable("LineStartZ", lineStartZ));
         float lineEndZ(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("LineEndZ", lineEndZ));
+        PandoraThrowOnError(this->ReadVariable("LineEndZ", lineEndZ));
 
         pParameters->m_lineGapType = lineGapType;
         pParameters->m_lineStartX = lineStartX;
         pParameters->m_lineEndX = lineEndX;
         pParameters->m_lineStartZ = lineStartZ;
         pParameters->m_lineEndZ = lineEndZ;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::LineGap::Create(*m_pPandora, *pParameters, *m_pLineGapFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::LineGap::Create(*m_pPandora, *pParameters, *m_pLineGapFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -500,22 +500,22 @@ StatusCode XmlFileReader::ReadBoxGap()
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pBoxGapFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pBoxGapFactory->Read(*pParameters, *this));
 
         CartesianVector vertex(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Vertex", vertex));
+        PandoraThrowOnError(this->ReadVariable("Vertex", vertex));
         CartesianVector side1(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Side1", side1));
+        PandoraThrowOnError(this->ReadVariable("Side1", side1));
         CartesianVector side2(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Side2", side2));
+        PandoraThrowOnError(this->ReadVariable("Side2", side2));
         CartesianVector side3(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Side3", side3));
+        PandoraThrowOnError(this->ReadVariable("Side3", side3));
 
         pParameters->m_vertex = vertex;
         pParameters->m_side1 = side1;
         pParameters->m_side2 = side2;
         pParameters->m_side3 = side3;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::BoxGap::Create(*m_pPandora, *pParameters, *m_pBoxGapFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::BoxGap::Create(*m_pPandora, *pParameters, *m_pBoxGapFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -538,24 +538,24 @@ StatusCode XmlFileReader::ReadConcentricGap()
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pConcentricGapFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pConcentricGapFactory->Read(*pParameters, *this));
 
         float minZCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("MinZCoordinate", minZCoordinate));
+        PandoraThrowOnError(this->ReadVariable("MinZCoordinate", minZCoordinate));
         float maxZCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("MaxZCoordinate", maxZCoordinate));
+        PandoraThrowOnError(this->ReadVariable("MaxZCoordinate", maxZCoordinate));
         float innerRCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("InnerRCoordinate", innerRCoordinate));
+        PandoraThrowOnError(this->ReadVariable("InnerRCoordinate", innerRCoordinate));
         float innerPhiCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("InnerPhiCoordinate", innerPhiCoordinate));
+        PandoraThrowOnError(this->ReadVariable("InnerPhiCoordinate", innerPhiCoordinate));
         unsigned int innerSymmetryOrder(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("InnerSymmetryOrder", innerSymmetryOrder));
+        PandoraThrowOnError(this->ReadVariable("InnerSymmetryOrder", innerSymmetryOrder));
         float outerRCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("OuterRCoordinate", outerRCoordinate));
+        PandoraThrowOnError(this->ReadVariable("OuterRCoordinate", outerRCoordinate));
         float outerPhiCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("OuterPhiCoordinate", outerPhiCoordinate));
+        PandoraThrowOnError(this->ReadVariable("OuterPhiCoordinate", outerPhiCoordinate));
         unsigned int outerSymmetryOrder(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("OuterSymmetryOrder", outerSymmetryOrder));
+        PandoraThrowOnError(this->ReadVariable("OuterSymmetryOrder", outerSymmetryOrder));
 
         pParameters->m_minZCoordinate = minZCoordinate;
         pParameters->m_maxZCoordinate = maxZCoordinate;
@@ -565,7 +565,7 @@ StatusCode XmlFileReader::ReadConcentricGap()
         pParameters->m_outerRCoordinate = outerRCoordinate;
         pParameters->m_outerPhiCoordinate = outerPhiCoordinate;
         pParameters->m_outerSymmetryOrder = outerSymmetryOrder;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::ConcentricGap::Create(*m_pPandora, *pParameters, *m_pConcentricGapFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::ConcentricGap::Create(*m_pPandora, *pParameters, *m_pConcentricGapFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -588,51 +588,51 @@ StatusCode XmlFileReader::ReadCaloHit()
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pCaloHitFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pCaloHitFactory->Read(*pParameters, *this));
 
         unsigned int cellGeometryInput(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CellGeometry", cellGeometryInput));
+        PandoraThrowOnError(this->ReadVariable("CellGeometry", cellGeometryInput));
         const CellGeometry cellGeometry(static_cast<CellGeometry>(cellGeometryInput));
         CartesianVector positionVector(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("PositionVector", positionVector));
+        PandoraThrowOnError(this->ReadVariable("PositionVector", positionVector));
         CartesianVector expectedDirection(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("ExpectedDirection", expectedDirection));
+        PandoraThrowOnError(this->ReadVariable("ExpectedDirection", expectedDirection));
         CartesianVector cellNormalVector(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CellNormalVector", cellNormalVector));
+        PandoraThrowOnError(this->ReadVariable("CellNormalVector", cellNormalVector));
         float cellThickness(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CellThickness", cellThickness));
+        PandoraThrowOnError(this->ReadVariable("CellThickness", cellThickness));
         float nCellRadiationLengths(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("NCellRadiationLengths", nCellRadiationLengths));
+        PandoraThrowOnError(this->ReadVariable("NCellRadiationLengths", nCellRadiationLengths));
         float nCellInteractionLengths(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("NCellInteractionLengths", nCellInteractionLengths));
+        PandoraThrowOnError(this->ReadVariable("NCellInteractionLengths", nCellInteractionLengths));
         float time(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Time", time));
+        PandoraThrowOnError(this->ReadVariable("Time", time));
         float inputEnergy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("InputEnergy", inputEnergy));
+        PandoraThrowOnError(this->ReadVariable("InputEnergy", inputEnergy));
         float mipEquivalentEnergy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("MipEquivalentEnergy", mipEquivalentEnergy));
+        PandoraThrowOnError(this->ReadVariable("MipEquivalentEnergy", mipEquivalentEnergy));
         float electromagneticEnergy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("ElectromagneticEnergy", electromagneticEnergy));
+        PandoraThrowOnError(this->ReadVariable("ElectromagneticEnergy", electromagneticEnergy));
         float hadronicEnergy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("HadronicEnergy", hadronicEnergy));
+        PandoraThrowOnError(this->ReadVariable("HadronicEnergy", hadronicEnergy));
         bool isDigital(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("IsDigital", isDigital));
+        PandoraThrowOnError(this->ReadVariable("IsDigital", isDigital));
         unsigned int hitTypeInput(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("HitType", hitTypeInput));
+        PandoraThrowOnError(this->ReadVariable("HitType", hitTypeInput));
         const HitType hitType(static_cast<HitType>(hitTypeInput));
         unsigned int hitRegionInput(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("HitRegion", hitRegionInput));
+        PandoraThrowOnError(this->ReadVariable("HitRegion", hitRegionInput));
         const HitRegion hitRegion(static_cast<HitRegion>(hitRegionInput));
         unsigned int layer(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Layer", layer));
+        PandoraThrowOnError(this->ReadVariable("Layer", layer));
         bool isInOuterSamplingLayer(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("IsInOuterSamplingLayer", isInOuterSamplingLayer));
+        PandoraThrowOnError(this->ReadVariable("IsInOuterSamplingLayer", isInOuterSamplingLayer));
         const void *pParentAddress(nullptr);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("ParentCaloHitAddress", pParentAddress));
+        PandoraThrowOnError(this->ReadVariable("ParentCaloHitAddress", pParentAddress));
         float cellSize0(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CellSize0", cellSize0));
+        PandoraThrowOnError(this->ReadVariable("CellSize0", cellSize0));
         float cellSize1(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CellSize1", cellSize1));
+        PandoraThrowOnError(this->ReadVariable("CellSize1", cellSize1));
 
         pParameters->m_positionVector = positionVector;
         pParameters->m_expectedDirection = expectedDirection;
@@ -654,7 +654,7 @@ StatusCode XmlFileReader::ReadCaloHit()
         pParameters->m_layer = layer;
         pParameters->m_isInOuterSamplingLayer = isInOuterSamplingLayer;
         pParameters->m_pParentAddress = pParentAddress;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::CaloHit::Create(*m_pPandora, *pParameters, *m_pCaloHitFactory));
+        PandoraThrowOnError(PandoraApi::CaloHit::Create(*m_pPandora, *pParameters, *m_pCaloHitFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -677,38 +677,38 @@ StatusCode XmlFileReader::ReadTrack()
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pTrackFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pTrackFactory->Read(*pParameters, *this));
 
         float d0(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("D0", d0));
+        PandoraThrowOnError(this->ReadVariable("D0", d0));
         float z0(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Z0", z0));
+        PandoraThrowOnError(this->ReadVariable("Z0", z0));
         int particleId(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("ParticleId", particleId));
+        PandoraThrowOnError(this->ReadVariable("ParticleId", particleId));
         int charge(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Charge", charge));
+        PandoraThrowOnError(this->ReadVariable("Charge", charge));
         float mass(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Mass", mass));
+        PandoraThrowOnError(this->ReadVariable("Mass", mass));
         CartesianVector momentumAtDca(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("MomentumAtDca", momentumAtDca));
+        PandoraThrowOnError(this->ReadVariable("MomentumAtDca", momentumAtDca));
         TrackState trackStateAtStart(0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("TrackStateAtStart", trackStateAtStart));
+        PandoraThrowOnError(this->ReadVariable("TrackStateAtStart", trackStateAtStart));
         TrackState trackStateAtEnd(0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("TrackStateAtEnd", trackStateAtEnd));
+        PandoraThrowOnError(this->ReadVariable("TrackStateAtEnd", trackStateAtEnd));
         TrackState trackStateAtCalorimeter(0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("TrackStateAtCalorimeter", trackStateAtCalorimeter));
+        PandoraThrowOnError(this->ReadVariable("TrackStateAtCalorimeter", trackStateAtCalorimeter));
         float timeAtCalorimeter(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("TimeAtCalorimeter", timeAtCalorimeter));
+        PandoraThrowOnError(this->ReadVariable("TimeAtCalorimeter", timeAtCalorimeter));
         bool reachesCalorimeter(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("ReachesCalorimeter", reachesCalorimeter));
+        PandoraThrowOnError(this->ReadVariable("ReachesCalorimeter", reachesCalorimeter));
         bool isProjectedToEndCap(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("IsProjectedToEndCap", isProjectedToEndCap));
+        PandoraThrowOnError(this->ReadVariable("IsProjectedToEndCap", isProjectedToEndCap));
         bool canFormPfo(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CanFormPfo", canFormPfo));
+        PandoraThrowOnError(this->ReadVariable("CanFormPfo", canFormPfo));
         bool canFormClusterlessPfo(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("CanFormClusterlessPfo", canFormClusterlessPfo));
+        PandoraThrowOnError(this->ReadVariable("CanFormClusterlessPfo", canFormClusterlessPfo));
         const void *pParentAddress(nullptr);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("ParentTrackAddress", pParentAddress));
+        PandoraThrowOnError(this->ReadVariable("ParentTrackAddress", pParentAddress));
 
         pParameters->m_d0 = d0;
         pParameters->m_z0 = z0;
@@ -725,7 +725,7 @@ StatusCode XmlFileReader::ReadTrack()
         pParameters->m_canFormPfo = canFormPfo;
         pParameters->m_canFormClusterlessPfo = canFormClusterlessPfo;
         pParameters->m_pParentAddress = pParentAddress;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Track::Create(*m_pPandora, *pParameters, *m_pTrackFactory));
+        PandoraThrowOnError(PandoraApi::Track::Create(*m_pPandora, *pParameters, *m_pTrackFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -748,23 +748,23 @@ StatusCode XmlFileReader::ReadMCParticle()
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pMCParticleFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pMCParticleFactory->Read(*pParameters, *this));
 
         float energy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Energy", energy));
+        PandoraThrowOnError(this->ReadVariable("Energy", energy));
         CartesianVector momentum(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Momentum", momentum));
+        PandoraThrowOnError(this->ReadVariable("Momentum", momentum));
         CartesianVector vertex(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Vertex", vertex));
+        PandoraThrowOnError(this->ReadVariable("Vertex", vertex));
         CartesianVector endpoint(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Endpoint", endpoint));
+        PandoraThrowOnError(this->ReadVariable("Endpoint", endpoint));
         int particleId(-std::numeric_limits<int>::max());
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("ParticleId", particleId));
+        PandoraThrowOnError(this->ReadVariable("ParticleId", particleId));
         unsigned int mcParticleTypeInput(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("MCParticleType", mcParticleTypeInput));
+        PandoraThrowOnError(this->ReadVariable("MCParticleType", mcParticleTypeInput));
         const MCParticleType mcParticleType(static_cast<MCParticleType>(mcParticleTypeInput));
         const void *pParentAddress(nullptr);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Uid", pParentAddress));
+        PandoraThrowOnError(this->ReadVariable("Uid", pParentAddress));
 
         pParameters->m_energy = energy;
         pParameters->m_momentum = momentum;
@@ -773,7 +773,7 @@ StatusCode XmlFileReader::ReadMCParticle()
         pParameters->m_particleId = particleId;
         pParameters->m_mcParticleType = mcParticleType;
         pParameters->m_pParentAddress = pParentAddress;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::MCParticle::Create(*m_pPandora, *pParameters, *m_pMCParticleFactory));
+        PandoraThrowOnError(PandoraApi::MCParticle::Create(*m_pPandora, *pParameters, *m_pMCParticleFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -793,14 +793,14 @@ StatusCode XmlFileReader::ReadRelationship()
         return STATUS_CODE_FAILURE;
 
     unsigned int relationshipIdInput(0);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("RelationshipId", relationshipIdInput));
+    PandoraReturnOnError(this->ReadVariable("RelationshipId", relationshipIdInput));
     const RelationshipId relationshipId(static_cast<RelationshipId>(relationshipIdInput));
     const void *address1(nullptr);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Address1", address1));
+    PandoraReturnOnError(this->ReadVariable("Address1", address1));
     const void *address2(nullptr);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Address2", address2));
+    PandoraReturnOnError(this->ReadVariable("Address2", address2));
     float weight(1.f);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Weight", weight));
+    PandoraReturnOnError(this->ReadVariable("Weight", weight));
 
     switch (relationshipId)
     {
@@ -829,11 +829,11 @@ StatusCode XmlFileReader::ReadEventInformation()
         return STATUS_CODE_FAILURE;
 
     unsigned int run(0);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Run", run));
+    PandoraReturnOnError(this->ReadVariable("Run", run));
     unsigned int subrun(0);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Subrun", subrun));
+    PandoraReturnOnError(this->ReadVariable("Subrun", subrun));
     unsigned int event(0);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable("Event", event));
+    PandoraReturnOnError(this->ReadVariable("Event", event));
 
     return PandoraApi::SetEventInformation(*m_pPandora, run, subrun, event);
 }

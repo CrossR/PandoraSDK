@@ -41,7 +41,7 @@ StatusCode PandoraSettings::Initialize(const TiXmlHandle *const pXmlHandle)
 {
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraSettings::ReadGlobalSettings(pXmlHandle));
+        PandoraThrowOnError(PandoraSettings::ReadGlobalSettings(pXmlHandle));
 
         return STATUS_CODE_SUCCESS;
     }
@@ -57,50 +57,40 @@ StatusCode PandoraSettings::Initialize(const TiXmlHandle *const pXmlHandle)
 StatusCode PandoraSettings::ReadGlobalSettings(const TiXmlHandle *const pXmlHandle)
 {
     m_isMonitoringEnabled = false;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "IsMonitoringEnabled", m_isMonitoringEnabled));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "IsMonitoringEnabled", m_isMonitoringEnabled));
 
     m_shouldDisplayAlgorithmInfo = false;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "ShouldDisplayAlgorithmInfo", m_shouldDisplayAlgorithmInfo));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "ShouldDisplayAlgorithmInfo", m_shouldDisplayAlgorithmInfo));
 
     m_singleHitTypeClusteringMode = false;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "SingleHitTypeClusteringMode", m_singleHitTypeClusteringMode));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "SingleHitTypeClusteringMode", m_singleHitTypeClusteringMode));
 
     m_shouldCollapseMCParticlesToPfoTarget = false;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "ShouldCollapseMCParticlesToPfoTarget", m_shouldCollapseMCParticlesToPfoTarget));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "ShouldCollapseMCParticlesToPfoTarget", m_shouldCollapseMCParticlesToPfoTarget));
 
     m_useSingleMCParticleAssociation = false;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "UseSingleMCParticleAssociation", m_useSingleMCParticleAssociation));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "UseSingleMCParticleAssociation", m_useSingleMCParticleAssociation));
 
     m_electromagneticEnergyResolution = 0.2f;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "ElectromagneticEnergyResolution", m_electromagneticEnergyResolution));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "ElectromagneticEnergyResolution", m_electromagneticEnergyResolution));
 
     if (m_electromagneticEnergyResolution < std::numeric_limits<float>::epsilon())
         return STATUS_CODE_INVALID_PARAMETER;
 
     m_hadronicEnergyResolution = 0.6f;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "HadronicEnergyResolution", m_hadronicEnergyResolution));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "HadronicEnergyResolution", m_hadronicEnergyResolution));
 
     if (m_hadronicEnergyResolution < std::numeric_limits<float>::epsilon())
         return STATUS_CODE_INVALID_PARAMETER;
 
     m_mcPfoSelectionRadius = 500.f;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "MCPfoSelectionRadius", m_mcPfoSelectionRadius));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "MCPfoSelectionRadius", m_mcPfoSelectionRadius));
 
     m_mcPfoSelectionMomentum = 0.01f;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "MCPfoSelectionMomentum", m_mcPfoSelectionMomentum));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "MCPfoSelectionMomentum", m_mcPfoSelectionMomentum));
 
     m_mcPfoSelectionLowEnergyNPCutOff = 1.2f;
-    PANDORA_RETURN_RESULT_IF_AND_IF(STATUS_CODE_SUCCESS, STATUS_CODE_NOT_FOUND, !=, XmlHelper::ReadValue(*pXmlHandle,
-        "MCPfoSelectionProtonNeutronEnergyCutOff", m_mcPfoSelectionLowEnergyNPCutOff));
+    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "MCPfoSelectionProtonNeutronEnergyCutOff", m_mcPfoSelectionLowEnergyNPCutOff));
 
     return STATUS_CODE_SUCCESS;
 }

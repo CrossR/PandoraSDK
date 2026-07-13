@@ -40,18 +40,18 @@ BinaryFileReader::~BinaryFileReader()
 StatusCode BinaryFileReader::ReadHeader()
 {
     std::string fileHash;
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(fileHash));
+    PandoraReturnOnError(this->ReadVariable(fileHash));
 
     if (PANDORA_FILE_HASH != fileHash)
         return STATUS_CODE_FAILURE;
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(m_containerId));
+    PandoraReturnOnError(this->ReadVariable(m_containerId));
 
     if ((HEADER_CONTAINER != m_containerId) && (EVENT_CONTAINER != m_containerId) && (GEOMETRY_CONTAINER != m_containerId))
         return STATUS_CODE_FAILURE;
 
     m_containerPosition = m_fileStream.tellg();
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(m_containerSize));
+    PandoraReturnOnError(this->ReadVariable(m_containerSize));
 
     if (0 == m_containerSize)
         return STATUS_CODE_FAILURE;
@@ -63,7 +63,7 @@ StatusCode BinaryFileReader::ReadHeader()
 
 StatusCode BinaryFileReader::GoToNextContainer()
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadHeader());
+    PandoraReturnOnError(this->ReadHeader());
     m_fileStream.seekg(m_containerPosition + m_containerSize, std::ios::beg);
 
     if (!m_fileStream.good())
@@ -88,7 +88,7 @@ ContainerId BinaryFileReader::GetNextContainerId()
         throw StatusCodeException(STATUS_CODE_FAILURE);
 
     ContainerId containerId(UNKNOWN_CONTAINER);
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(containerId));
+    PandoraThrowOnError(this->ReadVariable(containerId));
 
     m_fileStream.seekg(initialPosition, std::ios::beg);
 
@@ -113,7 +113,7 @@ StatusCode BinaryFileReader::GoToGeometry(const unsigned int geometryNumber)
 
     while (nGeometriesRead < static_cast<int>(geometryNumber))
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->GoToNextGeometry());
+        PandoraReturnOnError(this->GoToNextGeometry());
         ++nGeometriesRead;
     }
 
@@ -135,7 +135,7 @@ StatusCode BinaryFileReader::GoToEvent(const unsigned int eventNumber)
 
     while (nEventsRead < static_cast<int>(eventNumber))
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->GoToNextEvent());
+        PandoraReturnOnError(this->GoToNextEvent());
         ++nEventsRead;
     }
 
@@ -249,14 +249,14 @@ StatusCode BinaryFileReader::ReadVersion(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (VERSION_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
     }
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(m_fileMajorVersion));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(m_fileMinorVersion));
+    PandoraReturnOnError(this->ReadVariable(m_fileMajorVersion));
+    PandoraReturnOnError(this->ReadVariable(m_fileMinorVersion));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -271,7 +271,7 @@ StatusCode BinaryFileReader::ReadSubDetector(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (SUB_DETECTOR_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
@@ -281,32 +281,32 @@ StatusCode BinaryFileReader::ReadSubDetector(bool checkComponentId)
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pSubDetectorFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pSubDetectorFactory->Read(*pParameters, *this));
 
         std::string subDetectorName;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(subDetectorName));
+        PandoraThrowOnError(this->ReadVariable(subDetectorName));
         SubDetectorType subDetectorType(SUB_DETECTOR_OTHER);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(subDetectorType));
+        PandoraThrowOnError(this->ReadVariable(subDetectorType));
         float innerRCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(innerRCoordinate));
+        PandoraThrowOnError(this->ReadVariable(innerRCoordinate));
         float innerZCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(innerZCoordinate));
+        PandoraThrowOnError(this->ReadVariable(innerZCoordinate));
         float innerPhiCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(innerPhiCoordinate));
+        PandoraThrowOnError(this->ReadVariable(innerPhiCoordinate));
         unsigned int innerSymmetryOrder(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(innerSymmetryOrder));
+        PandoraThrowOnError(this->ReadVariable(innerSymmetryOrder));
         float outerRCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(outerRCoordinate));
+        PandoraThrowOnError(this->ReadVariable(outerRCoordinate));
         float outerZCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(outerZCoordinate));
+        PandoraThrowOnError(this->ReadVariable(outerZCoordinate));
         float outerPhiCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(outerPhiCoordinate));
+        PandoraThrowOnError(this->ReadVariable(outerPhiCoordinate));
         unsigned int outerSymmetryOrder(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(outerSymmetryOrder));
+        PandoraThrowOnError(this->ReadVariable(outerSymmetryOrder));
         bool isMirroredInZ(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(isMirroredInZ));
+        PandoraThrowOnError(this->ReadVariable(isMirroredInZ));
         unsigned int nLayers(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(nLayers));
+        PandoraThrowOnError(this->ReadVariable(nLayers));
 
         pParameters->m_subDetectorName = subDetectorName;
         pParameters->m_subDetectorType = subDetectorType;
@@ -324,11 +324,11 @@ StatusCode BinaryFileReader::ReadSubDetector(bool checkComponentId)
         for (unsigned int iLayer = 0; iLayer < nLayers; ++iLayer)
         {
             float closestDistanceToIp(0.f);
-            PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(closestDistanceToIp));
+            PandoraThrowOnError(this->ReadVariable(closestDistanceToIp));
             float nRadiationLengths(0.f);
-            PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(nRadiationLengths));
+            PandoraThrowOnError(this->ReadVariable(nRadiationLengths));
             float nInteractionLengths(0.f);
-            PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(nInteractionLengths));
+            PandoraThrowOnError(this->ReadVariable(nInteractionLengths));
 
             PandoraApi::Geometry::LayerParameters layerParameters;
             layerParameters.m_closestDistanceToIp = closestDistanceToIp;
@@ -337,7 +337,7 @@ StatusCode BinaryFileReader::ReadSubDetector(bool checkComponentId)
             pParameters->m_layerParametersVector.push_back(layerParameters);
         }
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::SubDetector::Create(*m_pPandora, *pParameters, *m_pSubDetectorFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::SubDetector::Create(*m_pPandora, *pParameters, *m_pSubDetectorFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -359,7 +359,7 @@ StatusCode BinaryFileReader::ReadLArTPC(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (LAR_TPC_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
@@ -369,38 +369,38 @@ StatusCode BinaryFileReader::ReadLArTPC(bool checkComponentId)
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pLArTPCFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pLArTPCFactory->Read(*pParameters, *this));
 
         unsigned int larTPCVolumeId;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(larTPCVolumeId));
+        PandoraThrowOnError(this->ReadVariable(larTPCVolumeId));
         float centerX(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(centerX));
+        PandoraThrowOnError(this->ReadVariable(centerX));
         float centerY(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(centerY));
+        PandoraThrowOnError(this->ReadVariable(centerY));
         float centerZ(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(centerZ));
+        PandoraThrowOnError(this->ReadVariable(centerZ));
         float widthX(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(widthX));
+        PandoraThrowOnError(this->ReadVariable(widthX));
         float widthY(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(widthY));
+        PandoraThrowOnError(this->ReadVariable(widthY));
         float widthZ(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(widthZ));
+        PandoraThrowOnError(this->ReadVariable(widthZ));
         float wirePitchU(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(wirePitchU));
+        PandoraThrowOnError(this->ReadVariable(wirePitchU));
         float wirePitchV(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(wirePitchV));
+        PandoraThrowOnError(this->ReadVariable(wirePitchV));
         float wirePitchW(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(wirePitchW));
+        PandoraThrowOnError(this->ReadVariable(wirePitchW));
         float wireAngleU(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(wireAngleU));
+        PandoraThrowOnError(this->ReadVariable(wireAngleU));
         float wireAngleV(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(wireAngleV));
+        PandoraThrowOnError(this->ReadVariable(wireAngleV));
         float wireAngleW(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(wireAngleW));
+        PandoraThrowOnError(this->ReadVariable(wireAngleW));
         float sigmaUVW(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(sigmaUVW));
+        PandoraThrowOnError(this->ReadVariable(sigmaUVW));
         bool isDriftInPositiveX(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(isDriftInPositiveX));
+        PandoraThrowOnError(this->ReadVariable(isDriftInPositiveX));
 
         pParameters->m_larTPCVolumeId = larTPCVolumeId;
         pParameters->m_centerX = centerX;
@@ -418,7 +418,7 @@ StatusCode BinaryFileReader::ReadLArTPC(bool checkComponentId)
         pParameters->m_sigmaUVW = sigmaUVW;
         pParameters->m_isDriftInPositiveX = isDriftInPositiveX;
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::LArTPC::Create(*m_pPandora, *pParameters, *m_pLArTPCFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::LArTPC::Create(*m_pPandora, *pParameters, *m_pLArTPCFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -440,7 +440,7 @@ StatusCode BinaryFileReader::ReadLineGap(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (LINE_GAP_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
@@ -450,25 +450,25 @@ StatusCode BinaryFileReader::ReadLineGap(bool checkComponentId)
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pLineGapFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pLineGapFactory->Read(*pParameters, *this));
 
         LineGapType lineGapType(TPC_WIRE_GAP_VIEW_U);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(lineGapType));
+        PandoraThrowOnError(this->ReadVariable(lineGapType));
         float lineStartX(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(lineStartX));
+        PandoraThrowOnError(this->ReadVariable(lineStartX));
         float lineEndX(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(lineEndX));
+        PandoraThrowOnError(this->ReadVariable(lineEndX));
         float lineStartZ(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(lineStartZ));
+        PandoraThrowOnError(this->ReadVariable(lineStartZ));
         float lineEndZ(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(lineEndZ));
+        PandoraThrowOnError(this->ReadVariable(lineEndZ));
 
         pParameters->m_lineGapType = lineGapType;
         pParameters->m_lineStartX = lineStartX;
         pParameters->m_lineEndX = lineEndX;
         pParameters->m_lineStartZ = lineStartZ;
         pParameters->m_lineEndZ = lineEndZ;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::LineGap::Create(*m_pPandora, *pParameters, *m_pLineGapFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::LineGap::Create(*m_pPandora, *pParameters, *m_pLineGapFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -490,7 +490,7 @@ StatusCode BinaryFileReader::ReadBoxGap(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (BOX_GAP_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
@@ -500,22 +500,22 @@ StatusCode BinaryFileReader::ReadBoxGap(bool checkComponentId)
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pBoxGapFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pBoxGapFactory->Read(*pParameters, *this));
 
         CartesianVector vertex(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(vertex));
+        PandoraThrowOnError(this->ReadVariable(vertex));
         CartesianVector side1(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(side1));
+        PandoraThrowOnError(this->ReadVariable(side1));
         CartesianVector side2(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(side2));
+        PandoraThrowOnError(this->ReadVariable(side2));
         CartesianVector side3(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(side3));
+        PandoraThrowOnError(this->ReadVariable(side3));
 
         pParameters->m_vertex = vertex;
         pParameters->m_side1 = side1;
         pParameters->m_side2 = side2;
         pParameters->m_side3 = side3;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::BoxGap::Create(*m_pPandora, *pParameters, *m_pBoxGapFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::BoxGap::Create(*m_pPandora, *pParameters, *m_pBoxGapFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -537,7 +537,7 @@ StatusCode BinaryFileReader::ReadConcentricGap(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (CONCENTRIC_GAP_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
@@ -547,24 +547,24 @@ StatusCode BinaryFileReader::ReadConcentricGap(bool checkComponentId)
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pConcentricGapFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pConcentricGapFactory->Read(*pParameters, *this));
 
         float minZCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(minZCoordinate));
+        PandoraThrowOnError(this->ReadVariable(minZCoordinate));
         float maxZCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(maxZCoordinate));
+        PandoraThrowOnError(this->ReadVariable(maxZCoordinate));
         float innerRCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(innerRCoordinate));
+        PandoraThrowOnError(this->ReadVariable(innerRCoordinate));
         float innerPhiCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(innerPhiCoordinate));
+        PandoraThrowOnError(this->ReadVariable(innerPhiCoordinate));
         unsigned int innerSymmetryOrder(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(innerSymmetryOrder));
+        PandoraThrowOnError(this->ReadVariable(innerSymmetryOrder));
         float outerRCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(outerRCoordinate));
+        PandoraThrowOnError(this->ReadVariable(outerRCoordinate));
         float outerPhiCoordinate(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(outerPhiCoordinate));
+        PandoraThrowOnError(this->ReadVariable(outerPhiCoordinate));
         unsigned int outerSymmetryOrder(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(outerSymmetryOrder));
+        PandoraThrowOnError(this->ReadVariable(outerSymmetryOrder));
 
         pParameters->m_minZCoordinate = minZCoordinate;
         pParameters->m_maxZCoordinate = maxZCoordinate;
@@ -574,7 +574,7 @@ StatusCode BinaryFileReader::ReadConcentricGap(bool checkComponentId)
         pParameters->m_outerRCoordinate = outerRCoordinate;
         pParameters->m_outerPhiCoordinate = outerPhiCoordinate;
         pParameters->m_outerSymmetryOrder = outerSymmetryOrder;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::ConcentricGap::Create(*m_pPandora, *pParameters, *m_pConcentricGapFactory));
+        PandoraThrowOnError(PandoraApi::Geometry::ConcentricGap::Create(*m_pPandora, *pParameters, *m_pConcentricGapFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -596,7 +596,7 @@ StatusCode BinaryFileReader::ReadCaloHit(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (CALO_HIT_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
@@ -606,48 +606,48 @@ StatusCode BinaryFileReader::ReadCaloHit(bool checkComponentId)
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pCaloHitFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pCaloHitFactory->Read(*pParameters, *this));
 
         CellGeometry cellGeometry(RECTANGULAR);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(cellGeometry));
+        PandoraThrowOnError(this->ReadVariable(cellGeometry));
         CartesianVector positionVector(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(positionVector));
+        PandoraThrowOnError(this->ReadVariable(positionVector));
         CartesianVector expectedDirection(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(expectedDirection));
+        PandoraThrowOnError(this->ReadVariable(expectedDirection));
         CartesianVector cellNormalVector(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(cellNormalVector));
+        PandoraThrowOnError(this->ReadVariable(cellNormalVector));
         float cellThickness(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(cellThickness));
+        PandoraThrowOnError(this->ReadVariable(cellThickness));
         float nCellRadiationLengths(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(nCellRadiationLengths));
+        PandoraThrowOnError(this->ReadVariable(nCellRadiationLengths));
         float nCellInteractionLengths(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(nCellInteractionLengths));
+        PandoraThrowOnError(this->ReadVariable(nCellInteractionLengths));
         float time(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(time));
+        PandoraThrowOnError(this->ReadVariable(time));
         float inputEnergy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(inputEnergy));
+        PandoraThrowOnError(this->ReadVariable(inputEnergy));
         float mipEquivalentEnergy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(mipEquivalentEnergy));
+        PandoraThrowOnError(this->ReadVariable(mipEquivalentEnergy));
         float electromagneticEnergy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(electromagneticEnergy));
+        PandoraThrowOnError(this->ReadVariable(electromagneticEnergy));
         float hadronicEnergy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(hadronicEnergy));
+        PandoraThrowOnError(this->ReadVariable(hadronicEnergy));
         bool isDigital(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(isDigital));
+        PandoraThrowOnError(this->ReadVariable(isDigital));
         HitType hitType(ECAL);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(hitType));
+        PandoraThrowOnError(this->ReadVariable(hitType));
         HitRegion hitRegion(BARREL);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(hitRegion));
+        PandoraThrowOnError(this->ReadVariable(hitRegion));
         unsigned int layer(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(layer));
+        PandoraThrowOnError(this->ReadVariable(layer));
         bool isInOuterSamplingLayer(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(isInOuterSamplingLayer));
+        PandoraThrowOnError(this->ReadVariable(isInOuterSamplingLayer));
         const void *pParentAddress(nullptr);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(pParentAddress));
+        PandoraThrowOnError(this->ReadVariable(pParentAddress));
         float cellSize0(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(cellSize0));
+        PandoraThrowOnError(this->ReadVariable(cellSize0));
         float cellSize1(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(cellSize1));
+        PandoraThrowOnError(this->ReadVariable(cellSize1));
 
         pParameters->m_positionVector = positionVector;
         pParameters->m_expectedDirection = expectedDirection;
@@ -669,7 +669,7 @@ StatusCode BinaryFileReader::ReadCaloHit(bool checkComponentId)
         pParameters->m_layer = layer;
         pParameters->m_isInOuterSamplingLayer = isInOuterSamplingLayer;
         pParameters->m_pParentAddress = pParentAddress;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::CaloHit::Create(*m_pPandora, *pParameters, *m_pCaloHitFactory));
+        PandoraThrowOnError(PandoraApi::CaloHit::Create(*m_pPandora, *pParameters, *m_pCaloHitFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -691,7 +691,7 @@ StatusCode BinaryFileReader::ReadTrack(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (TRACK_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
@@ -701,38 +701,38 @@ StatusCode BinaryFileReader::ReadTrack(bool checkComponentId)
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pTrackFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pTrackFactory->Read(*pParameters, *this));
 
         float d0(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(d0));
+        PandoraThrowOnError(this->ReadVariable(d0));
         float z0(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(z0));
+        PandoraThrowOnError(this->ReadVariable(z0));
         int particleId(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(particleId));
+        PandoraThrowOnError(this->ReadVariable(particleId));
         int charge(0);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(charge));
+        PandoraThrowOnError(this->ReadVariable(charge));
         float mass(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(mass));
+        PandoraThrowOnError(this->ReadVariable(mass));
         CartesianVector momentumAtDca(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(momentumAtDca));
+        PandoraThrowOnError(this->ReadVariable(momentumAtDca));
         TrackState trackStateAtStart(0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(trackStateAtStart));
+        PandoraThrowOnError(this->ReadVariable(trackStateAtStart));
         TrackState trackStateAtEnd(0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(trackStateAtEnd));
+        PandoraThrowOnError(this->ReadVariable(trackStateAtEnd));
         TrackState trackStateAtCalorimeter(0.f, 0.f, 0.f, 0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(trackStateAtCalorimeter));
+        PandoraThrowOnError(this->ReadVariable(trackStateAtCalorimeter));
         float timeAtCalorimeter(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(timeAtCalorimeter));
+        PandoraThrowOnError(this->ReadVariable(timeAtCalorimeter));
         bool reachesCalorimeter(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(reachesCalorimeter));
+        PandoraThrowOnError(this->ReadVariable(reachesCalorimeter));
         bool isProjectedToEndCap(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(isProjectedToEndCap));
+        PandoraThrowOnError(this->ReadVariable(isProjectedToEndCap));
         bool canFormPfo(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(canFormPfo));
+        PandoraThrowOnError(this->ReadVariable(canFormPfo));
         bool canFormClusterlessPfo(false);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(canFormClusterlessPfo));
+        PandoraThrowOnError(this->ReadVariable(canFormClusterlessPfo));
         const void *pParentAddress(nullptr);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(pParentAddress));
+        PandoraThrowOnError(this->ReadVariable(pParentAddress));
 
         pParameters->m_d0 = d0;
         pParameters->m_z0 = z0;
@@ -749,7 +749,7 @@ StatusCode BinaryFileReader::ReadTrack(bool checkComponentId)
         pParameters->m_canFormPfo = canFormPfo;
         pParameters->m_canFormClusterlessPfo = canFormClusterlessPfo;
         pParameters->m_pParentAddress = pParentAddress;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Track::Create(*m_pPandora, *pParameters, *m_pTrackFactory));
+        PandoraThrowOnError(PandoraApi::Track::Create(*m_pPandora, *pParameters, *m_pTrackFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -771,7 +771,7 @@ StatusCode BinaryFileReader::ReadMCParticle(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (MC_PARTICLE_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
@@ -781,22 +781,22 @@ StatusCode BinaryFileReader::ReadMCParticle(bool checkComponentId)
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pMCParticleFactory->Read(*pParameters, *this));
+        PandoraThrowOnError(m_pMCParticleFactory->Read(*pParameters, *this));
 
         float energy(0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(energy));
+        PandoraThrowOnError(this->ReadVariable(energy));
         CartesianVector momentum(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(momentum));
+        PandoraThrowOnError(this->ReadVariable(momentum));
         CartesianVector vertex(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(vertex));
+        PandoraThrowOnError(this->ReadVariable(vertex));
         CartesianVector endpoint(0.f, 0.f, 0.f);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(endpoint));
+        PandoraThrowOnError(this->ReadVariable(endpoint));
         int particleId(-std::numeric_limits<int>::max());
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(particleId));
+        PandoraThrowOnError(this->ReadVariable(particleId));
         MCParticleType mcParticleType(MC_3D);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(mcParticleType));
+        PandoraThrowOnError(this->ReadVariable(mcParticleType));
         const void *pParentAddress(nullptr);
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(pParentAddress));
+        PandoraThrowOnError(this->ReadVariable(pParentAddress));
 
         pParameters->m_energy = energy;
         pParameters->m_momentum = momentum;
@@ -805,7 +805,7 @@ StatusCode BinaryFileReader::ReadMCParticle(bool checkComponentId)
         pParameters->m_particleId = particleId;
         pParameters->m_mcParticleType = mcParticleType;
         pParameters->m_pParentAddress = pParentAddress;
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::MCParticle::Create(*m_pPandora, *pParameters, *m_pMCParticleFactory));
+        PandoraThrowOnError(PandoraApi::MCParticle::Create(*m_pPandora, *pParameters, *m_pMCParticleFactory));
         delete pParameters;
     }
     catch (StatusCodeException &statusCodeException)
@@ -827,20 +827,20 @@ StatusCode BinaryFileReader::ReadRelationship(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (RELATIONSHIP_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
     }
 
     RelationshipId relationshipId(UNKNOWN_RELATIONSHIP);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(relationshipId));
+    PandoraReturnOnError(this->ReadVariable(relationshipId));
     const void *address1(nullptr);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(address1));
+    PandoraReturnOnError(this->ReadVariable(address1));
     const void *address2(nullptr);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(address2));
+    PandoraReturnOnError(this->ReadVariable(address2));
     float weight(1.f);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(weight));
+    PandoraReturnOnError(this->ReadVariable(weight));
 
     switch (relationshipId)
     {
@@ -871,18 +871,18 @@ StatusCode BinaryFileReader::ReadEventInformation(bool checkComponentId)
     if (checkComponentId)
     {
         ComponentId componentId(UNKNOWN_COMPONENT);
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(componentId));
+        PandoraReturnOnError(this->ReadVariable(componentId));
 
         if (EVENT_INFO_COMPONENT != componentId)
             return STATUS_CODE_FAILURE;
     }
 
     unsigned int run(0);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(run));
+    PandoraReturnOnError(this->ReadVariable(run));
     unsigned int subrun(0);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(subrun));
+    PandoraReturnOnError(this->ReadVariable(subrun));
     unsigned int event(0);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->ReadVariable(event));
+    PandoraReturnOnError(this->ReadVariable(event));
 
     return PandoraApi::SetEventInformation(*m_pPandora, run, subrun, event);
 }

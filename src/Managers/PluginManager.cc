@@ -199,50 +199,50 @@ StatusCode PluginManager::InitializePlugins(const TiXmlHandle *const pXmlHandle)
 {
     if (nullptr != m_pBFieldPlugin)
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pBFieldPlugin->RegisterDetails(m_pPandora, "BFieldPlugin", "BFieldPlugin"));
+        PandoraReturnOnError(m_pBFieldPlugin->RegisterDetails(m_pPandora, "BFieldPlugin", "BFieldPlugin"));
         TiXmlElement *const pBFieldXmlElement(pXmlHandle->FirstChild("BFieldPlugin").Element());
 
         if (nullptr != pBFieldXmlElement)
-            PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pBFieldPlugin->ReadSettings(TiXmlHandle(pBFieldXmlElement)));
+            PandoraReturnOnError(m_pBFieldPlugin->ReadSettings(TiXmlHandle(pBFieldXmlElement)));
 
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pBFieldPlugin->Initialize());
+        PandoraReturnOnError(m_pBFieldPlugin->Initialize());
     }
 
     if (nullptr != m_pLArTransformationPlugin)
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pLArTransformationPlugin->RegisterDetails(m_pPandora, "LArTransformationPlugin", "LArTransformationPlugin"));
+        PandoraReturnOnError(m_pLArTransformationPlugin->RegisterDetails(m_pPandora, "LArTransformationPlugin", "LArTransformationPlugin"));
         TiXmlElement *const pLArTransformationXmlElement(pXmlHandle->FirstChild("LArTransformationPlugin").Element());
 
         if (nullptr != pLArTransformationXmlElement)
-            PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pLArTransformationPlugin->ReadSettings(TiXmlHandle(pLArTransformationXmlElement)));
+            PandoraReturnOnError(m_pLArTransformationPlugin->ReadSettings(TiXmlHandle(pLArTransformationXmlElement)));
 
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pLArTransformationPlugin->Initialize());
+        PandoraReturnOnError(m_pLArTransformationPlugin->Initialize());
     }
 
     if (nullptr != m_pPseudoLayerPlugin)
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPseudoLayerPlugin->RegisterDetails(m_pPandora, "PseudoLayerPlugin", "PseudoLayerPlugin"));
+        PandoraReturnOnError(m_pPseudoLayerPlugin->RegisterDetails(m_pPandora, "PseudoLayerPlugin", "PseudoLayerPlugin"));
         TiXmlElement *const pPseudoLayerXmlElement(pXmlHandle->FirstChild("PseudoLayerPlugin").Element());
 
         if (nullptr != pPseudoLayerXmlElement)
-            PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPseudoLayerPlugin->ReadSettings(TiXmlHandle(pPseudoLayerXmlElement)));
+            PandoraReturnOnError(m_pPseudoLayerPlugin->ReadSettings(TiXmlHandle(pPseudoLayerXmlElement)));
 
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPseudoLayerPlugin->Initialize());
+        PandoraReturnOnError(m_pPseudoLayerPlugin->Initialize());
     }
 
     if (nullptr != m_pShowerProfilePlugin)
     {
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pShowerProfilePlugin->RegisterDetails(m_pPandora, "ShowerProfilePlugin", "ShowerProfilePlugin"));
+        PandoraReturnOnError(m_pShowerProfilePlugin->RegisterDetails(m_pPandora, "ShowerProfilePlugin", "ShowerProfilePlugin"));
         TiXmlElement *const pShowerProfileXmlElement(pXmlHandle->FirstChild("ShowerProfilePlugin").Element());
 
         if (nullptr != pShowerProfileXmlElement)
-            PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pShowerProfilePlugin->ReadSettings(TiXmlHandle(pShowerProfileXmlElement)));
+            PandoraReturnOnError(m_pShowerProfilePlugin->ReadSettings(TiXmlHandle(pShowerProfileXmlElement)));
 
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pShowerProfilePlugin->Initialize());
+        PandoraReturnOnError(m_pShowerProfilePlugin->Initialize());
     }
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pEnergyCorrections->InitializePlugins(pXmlHandle));
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pParticleId->InitializePlugins(pXmlHandle));
+    PandoraReturnOnError(m_pEnergyCorrections->InitializePlugins(pXmlHandle));
+    PandoraReturnOnError(m_pParticleId->InitializePlugins(pXmlHandle));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -252,19 +252,19 @@ StatusCode PluginManager::InitializePlugins(const TiXmlHandle *const pXmlHandle)
 StatusCode PluginManager::ResetForNextEvent()
 {
     if (m_pBFieldPlugin)
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pBFieldPlugin->Reset());
+        PandoraReturnOnError(m_pBFieldPlugin->Reset());
 
     if (m_pLArTransformationPlugin)
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pLArTransformationPlugin->Reset());
+        PandoraReturnOnError(m_pLArTransformationPlugin->Reset());
 
     if (m_pPseudoLayerPlugin)
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPseudoLayerPlugin->Reset());
+        PandoraReturnOnError(m_pPseudoLayerPlugin->Reset());
 
     if (m_pShowerProfilePlugin)
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pShowerProfilePlugin->Reset());
+        PandoraReturnOnError(m_pShowerProfilePlugin->Reset());
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pEnergyCorrections->ResetForNextEvent());
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pParticleId->ResetForNextEvent());
+    PandoraReturnOnError(m_pEnergyCorrections->ResetForNextEvent());
+    PandoraReturnOnError(m_pParticleId->ResetForNextEvent());
 
     return STATUS_CODE_SUCCESS;
 }

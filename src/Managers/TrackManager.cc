@@ -21,7 +21,7 @@ namespace pandora
 TrackManager::TrackManager(const Pandora *const pPandora) :
     InputObjectManager<Track>(pPandora)
 {
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->CreateInitialLists());
+    PandoraThrowOnError(this->CreateInitialLists());
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ StatusCode TrackManager::Create(const object_creation::Track::Parameters &parame
 
     try
     {
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, factory.Create(parameters, pTrack));
+        PandoraThrowOnError(factory.Create(parameters, pTrack));
 
         NameToListMap::iterator inputIter = m_nameToListMap.find(m_inputListName);
 
@@ -169,8 +169,8 @@ StatusCode TrackManager::SetTrackSiblingRelationship(const Uid firstSiblingUid, 
 
 StatusCode TrackManager::AssociateTracks() const
 {
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->AddParentDaughterAssociations());
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->AddSiblingAssociations());
+    PandoraReturnOnError(this->AddParentDaughterAssociations());
+    PandoraReturnOnError(this->AddSiblingAssociations());
 
     return STATUS_CODE_SUCCESS;
 }
@@ -183,7 +183,7 @@ StatusCode TrackManager::AddParentDaughterAssociations() const
         return STATUS_CODE_SUCCESS;
 
     const TrackList *pInputList(nullptr);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->GetList(m_inputListName, pInputList));
+    PandoraReturnOnError(this->GetList(m_inputListName, pInputList));
 
     for (const Track *const pParentTrack : *pInputList)
     {
@@ -223,7 +223,7 @@ StatusCode TrackManager::AddSiblingAssociations() const
         return STATUS_CODE_SUCCESS;
 
     const TrackList *pInputList(nullptr);
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->GetList(m_inputListName, pInputList));
+    PandoraReturnOnError(this->GetList(m_inputListName, pInputList));
 
     for (const Track *const pTrack : *pInputList)
     {
@@ -298,7 +298,7 @@ StatusCode TrackManager::RemoveCurrentClusterAssociations(TrackToClusterMap &dan
         if (!danglingClusters.insert(TrackToClusterMap::value_type(pTrack, pTrack->GetAssociatedCluster())).second)
             return STATUS_CODE_FAILURE;
 
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->RemoveAssociatedCluster(pTrack, pTrack->GetAssociatedCluster()));
+        PandoraReturnOnError(this->RemoveAssociatedCluster(pTrack, pTrack->GetAssociatedCluster()));
     }
 
     return STATUS_CODE_SUCCESS;
@@ -311,7 +311,7 @@ StatusCode TrackManager::RemoveClusterAssociations(const TrackList &trackList) c
     for (const Track *const pTrack : trackList)
     {
         if (pTrack->HasAssociatedCluster())
-            PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->RemoveAssociatedCluster(pTrack, pTrack->GetAssociatedCluster()));
+            PandoraReturnOnError(this->RemoveAssociatedCluster(pTrack, pTrack->GetAssociatedCluster()));
     }
 
     return STATUS_CODE_SUCCESS;

@@ -20,7 +20,7 @@ namespace pandora
 ClusterManager::ClusterManager(const Pandora *const pPandora) :
     AlgorithmObjectManager<Cluster>(pPandora)
 {
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->CreateInitialLists());
+    PandoraThrowOnError(this->CreateInitialLists());
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ StatusCode ClusterManager::Create(const object_creation::Cluster::Parameters &pa
         if (m_nameToListMap.end() == iter)
              throw StatusCodeException(STATUS_CODE_NOT_INITIALIZED);
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, factory.Create(parameters, pCluster));
+        PandoraThrowOnError(factory.Create(parameters, pCluster));
 
         if (!pCluster)
              throw StatusCodeException(STATUS_CODE_FAILURE);
@@ -153,7 +153,7 @@ StatusCode ClusterManager::MergeAndDeleteClusters(const Cluster *const pClusterT
     if ((enlargeListIter->second->end() == clusterToEnlargeIter) || (deleteListIter->second->end() == clusterToDeleteIter))
         return STATUS_CODE_NOT_FOUND;
 
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->Modifiable(pClusterToEnlarge)->AddHitsFromSecondCluster(pClusterToDelete));
+    PandoraReturnOnError(this->Modifiable(pClusterToEnlarge)->AddHitsFromSecondCluster(pClusterToDelete));
 
     clusterToDeleteIter = deleteListIter->second->erase(clusterToDeleteIter);
     delete pClusterToDelete;
@@ -186,7 +186,7 @@ StatusCode ClusterManager::RemoveAllTrackAssociations() const
             const TrackList trackList(pCluster->GetAssociatedTrackList());
 
             for (const Track *const pTrack : trackList)
-                PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->RemoveTrackAssociation(pCluster, pTrack));
+                PandoraReturnOnError(this->RemoveTrackAssociation(pCluster, pTrack));
         }
     }
 
@@ -209,7 +209,7 @@ StatusCode ClusterManager::RemoveCurrentTrackAssociations(TrackList &danglingTra
         danglingTracks.insert(danglingTracks.end(), trackList.begin(), trackList.end());
 
         for (const Track *const pTrack : trackList)
-            PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->RemoveTrackAssociation(pCluster, pTrack));
+            PandoraReturnOnError(this->RemoveTrackAssociation(pCluster, pTrack));
     }
 
     return STATUS_CODE_SUCCESS;
@@ -220,7 +220,7 @@ StatusCode ClusterManager::RemoveCurrentTrackAssociations(TrackList &danglingTra
 StatusCode ClusterManager::RemoveTrackAssociations(const TrackToClusterMap &trackToClusterList) const
 {
     for (TrackToClusterMap::const_iterator iter = trackToClusterList.begin(), iterEnd = trackToClusterList.end(); iter != iterEnd; ++iter)
-        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, this->RemoveTrackAssociation(iter->second, iter->first));
+        PandoraReturnOnError(this->RemoveTrackAssociation(iter->second, iter->first));
 
     return STATUS_CODE_SUCCESS;
 }
