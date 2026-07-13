@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/include/Helpers/XmlHelper.h
- * 
+ *
  *  @brief  Header file for the xml helper class.
- * 
+ *
  *  $Log: $
  */
 #ifndef PANDORA_XML_HELPER_H
@@ -19,6 +19,15 @@
 namespace pandora
 {
 
+#define PandoraRequiredXML(XmlHandle, XmlElementName, Value)                                                 \
+    PandoraReturnOnError(pandora::XmlHelper::ReadRequired((XmlHandle), (XmlElementName), (Value)))
+
+#define PandoraOptionalXML(XmlHandle, XmlElementName, Value)                                                 \
+    PandoraReturnOnError(pandora::XmlHelper::ReadOptional((XmlHandle), (XmlElementName), (Value)))
+
+#define PandoraOptionalXMLWithDefault(XmlHandle, XmlElementName, Fallback, Value)                           \
+    PandoraReturnOnError(pandora::XmlHelper::ReadOptionalWithDefault((XmlHandle), (XmlElementName), (Fallback), (Value)))
+
 /**
  *  @brief  XmlHelper class
  */
@@ -27,7 +36,7 @@ class XmlHelper
 public:
     /**
      *  @brief  Read a value from an xml element
-     * 
+     *
      *  @param  xmlHandle the relevant xml handle
      *  @param  xmlElementName the name of the xml element to examine
      *  @param  t to receive the value
@@ -64,11 +73,11 @@ public:
      *  @param  t to receive the value
      */
     template <typename T>
-    static StatusCode ReadOptionalOr(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, const T &fallback, T &t);
+    static StatusCode ReadOptionalWithDefault(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, const T &fallback, T &t);
 
     /**
      *  @brief  Read a vector of values from a (space separated) list in an xml element
-     * 
+     *
      *  @param  xmlHandle the relevant xml handle
      *  @param  xmlElementName the name of the xml element to examine
      *  @param  vector to receive the vector of values
@@ -99,7 +108,7 @@ public:
     /**
      *  @brief  Read a two-dimensional array of values into a vector of vectors. Each row of values must be contained
      *          within <rowname></rowname> xml tags, whilst the values in the row must be space separated
-     * 
+     *
      *  @param  xmlHandle the relevant xml handle
      *  @param  xmlElementName the name of the xml element to examine
      *  @param  rowName the row name
@@ -111,7 +120,7 @@ public:
 
     /**
      *  @brief  Process an algorithm described in an xml element with a matching "description = ..." attribute
-     * 
+     *
      *  @param  algorithm the parent algorithm calling this function
      *  @param  xmlHandle the relevant xml handle
      *  @param  description the description attribute of the algorithm xml element
@@ -122,7 +131,7 @@ public:
 
     /**
      *  @brief  Process a single algorithm described in an xml file (the first found by the xml handle)
-     * 
+     *
      *  @param  algorithm the parent algorithm calling this function
      *  @param  xmlHandle the relevant xml handle
      *  @param  algorithmName to receive the name of the algorithm instance
@@ -131,7 +140,7 @@ public:
 
     /**
      *  @brief  Process a list of daughter algorithms in an xml file
-     * 
+     *
      *  @param  algorithm the parent algorithm calling this function
      *  @param  xmlHandle the relevant xml handle
      *  @param  listName the name of the algorithm list
@@ -142,7 +151,7 @@ public:
 
     /**
      *  @brief  Process an algorithm tool described in an xml element with a matching "description = ..." attribute
-     * 
+     *
      *  @param  algorithm the parent algorithm calling this function
      *  @param  xmlHandle the relevant xml handle
      *  @param  description the description attribute of the algorithm tool xml element
@@ -153,7 +162,7 @@ public:
 
     /**
      *  @brief  Process a single algorithm tool described in an xml file (the first found by the xml handle)
-     * 
+     *
      *  @param  algorithm the parent algorithm calling this function
      *  @param  xmlHandle the relevant xml handle
      *  @param  pAlgorithmTool to receive the address of the algorithm tool instance
@@ -162,7 +171,7 @@ public:
 
     /**
      *  @brief  Process a list of algorithms tools in an xml file
-     * 
+     *
      *  @param  algorithm the parent algorithm calling this function
      *  @param  xmlHandle the relevant xml handle
      *  @param  listName the name of the algorithm tool list
@@ -173,7 +182,7 @@ public:
 
     /**
      *  @brief  Tokenize a string
-     * 
+     *
      *  @param  inputString the input string
      *  @param  tokens to receive the resulting tokens
      *  @param  delimiter the specified delimeter
@@ -211,7 +220,7 @@ inline StatusCode XmlHelper::ReadOptional(const TiXmlHandle &xmlHandle, const st
 }
 
 template <typename T>
-inline StatusCode XmlHelper::ReadOptionalOr(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, const T &fallback, T &t)
+inline StatusCode XmlHelper::ReadOptionalWithDefault(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, const T &fallback, T &t)
 {
     const StatusCode statusCode = XmlHelper::ReadValue(xmlHandle, xmlElementName, t);
 

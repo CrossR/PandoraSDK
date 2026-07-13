@@ -1,8 +1,8 @@
 /**
  *  @file PandoraSDK/src/Pandora/PandoraSettings.cc
- * 
+ *
  *  @brief Implementation of the pandora settings class.
- * 
+ *
  *  $Log: $
  */
 
@@ -57,40 +57,40 @@ StatusCode PandoraSettings::Initialize(const TiXmlHandle *const pXmlHandle)
 StatusCode PandoraSettings::ReadGlobalSettings(const TiXmlHandle *const pXmlHandle)
 {
     m_isMonitoringEnabled = false;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "IsMonitoringEnabled", m_isMonitoringEnabled));
+    PandoraOptionalXML(*pXmlHandle, "IsMonitoringEnabled", m_isMonitoringEnabled);
 
     m_shouldDisplayAlgorithmInfo = false;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "ShouldDisplayAlgorithmInfo", m_shouldDisplayAlgorithmInfo));
+    PandoraOptionalXML(*pXmlHandle, "ShouldDisplayAlgorithmInfo", m_shouldDisplayAlgorithmInfo);
 
     m_singleHitTypeClusteringMode = false;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "SingleHitTypeClusteringMode", m_singleHitTypeClusteringMode));
+    PandoraOptionalXML(*pXmlHandle, "SingleHitTypeClusteringMode", m_singleHitTypeClusteringMode);
 
     m_shouldCollapseMCParticlesToPfoTarget = false;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "ShouldCollapseMCParticlesToPfoTarget", m_shouldCollapseMCParticlesToPfoTarget));
+    PandoraOptionalXML(*pXmlHandle, "ShouldCollapseMCParticlesToPfoTarget", m_shouldCollapseMCParticlesToPfoTarget);
 
     m_useSingleMCParticleAssociation = false;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "UseSingleMCParticleAssociation", m_useSingleMCParticleAssociation));
+    PandoraOptionalXML(*pXmlHandle, "UseSingleMCParticleAssociation", m_useSingleMCParticleAssociation);
 
     m_electromagneticEnergyResolution = 0.2f;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "ElectromagneticEnergyResolution", m_electromagneticEnergyResolution));
+    PandoraOptionalXML(*pXmlHandle, "ElectromagneticEnergyResolution", m_electromagneticEnergyResolution);
 
     if (m_electromagneticEnergyResolution < std::numeric_limits<float>::epsilon())
         return STATUS_CODE_INVALID_PARAMETER;
 
     m_hadronicEnergyResolution = 0.6f;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "HadronicEnergyResolution", m_hadronicEnergyResolution));
+    PandoraOptionalXML(*pXmlHandle, "HadronicEnergyResolution", m_hadronicEnergyResolution);
 
     if (m_hadronicEnergyResolution < std::numeric_limits<float>::epsilon())
         return STATUS_CODE_INVALID_PARAMETER;
 
     m_mcPfoSelectionRadius = 500.f;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "MCPfoSelectionRadius", m_mcPfoSelectionRadius));
+    PandoraOptionalXML(*pXmlHandle, "MCPfoSelectionRadius", m_mcPfoSelectionRadius);
 
     m_mcPfoSelectionMomentum = 0.01f;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "MCPfoSelectionMomentum", m_mcPfoSelectionMomentum));
+    PandoraOptionalXML(*pXmlHandle, "MCPfoSelectionMomentum", m_mcPfoSelectionMomentum);
 
     m_mcPfoSelectionLowEnergyNPCutOff = 1.2f;
-    PandoraReturnOnError(XmlHelper::ReadOptional(*pXmlHandle, "MCPfoSelectionProtonNeutronEnergyCutOff", m_mcPfoSelectionLowEnergyNPCutOff));
+    PandoraOptionalXML(*pXmlHandle, "MCPfoSelectionProtonNeutronEnergyCutOff", m_mcPfoSelectionLowEnergyNPCutOff);
 
     return STATUS_CODE_SUCCESS;
 }
