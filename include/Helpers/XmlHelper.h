@@ -20,7 +20,7 @@ namespace pandora
 {
 
 #define PandoraRequiredXML(XmlHandle, XmlElementName, Value)                                                 \
-    PandoraReturnOnError(pandora::XmlHelper::ReadRequired((XmlHandle), (XmlElementName), (Value)))
+    PandoraReturnOnError(pandora::XmlHelper::ReadValue((XmlHandle), (XmlElementName), (Value)))
 
 #define PandoraOptionalXML(XmlHandle, XmlElementName, Value)                                                 \
     PandoraReturnOnError(pandora::XmlHelper::ReadOptional((XmlHandle), (XmlElementName), (Value)))
@@ -84,26 +84,6 @@ public:
      */
     template <typename T>
     static StatusCode ReadVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector);
-
-    /**
-     *  @brief  Read a required vector of values from an xml element
-     *
-     *  @param  xmlHandle the relevant xml handle
-     *  @param  xmlElementName the name of the xml element to examine
-     *  @param  vector to receive the vector of values
-     */
-    template <typename T>
-    static StatusCode ReadRequiredVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector);
-
-    /**
-     *  @brief  Read an optional vector of values from an xml element
-     *
-     *  @param  xmlHandle the relevant xml handle
-     *  @param  xmlElementName the name of the xml element to examine
-     *  @param  vector to receive the vector of values
-     */
-    template <typename T>
-    static StatusCode ReadOptionalVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector);
 
     /**
      *  @brief  Read a two-dimensional array of values into a vector of vectors. Each row of values must be contained
@@ -204,12 +184,6 @@ inline StatusCode XmlHelper::ReadValue(const TiXmlHandle &xmlHandle, const std::
         return STATUS_CODE_FAILURE;
 
     return STATUS_CODE_SUCCESS;
-}
-
-template <typename T>
-inline StatusCode XmlHelper::ReadRequired(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, T &t)
-{
-    return XmlHelper::ReadValue(xmlHandle, xmlElementName, t);
 }
 
 template <typename T>
@@ -334,19 +308,6 @@ inline StatusCode XmlHelper::ReadVectorOfValues(const TiXmlHandle &xmlHandle, co
     }
 
     return STATUS_CODE_SUCCESS;
-}
-
-template <typename T>
-inline StatusCode XmlHelper::ReadRequiredVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector)
-{
-    return XmlHelper::ReadVectorOfValues(xmlHandle, xmlElementName, vector);
-}
-
-template <typename T>
-inline StatusCode XmlHelper::ReadOptionalVectorOfValues(const TiXmlHandle &xmlHandle, const std::string &xmlElementName, std::vector<T> &vector)
-{
-    const StatusCode statusCode = XmlHelper::ReadVectorOfValues(xmlHandle, xmlElementName, vector);
-    return (STATUS_CODE_NOT_FOUND == statusCode) ? STATUS_CODE_SUCCESS : statusCode;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------

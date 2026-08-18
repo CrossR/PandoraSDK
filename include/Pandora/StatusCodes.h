@@ -8,6 +8,7 @@
 #ifndef PANDORA_STATUS_CODES_H
 #define PANDORA_STATUS_CODES_H 1
 
+#include <exception>
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -49,13 +50,13 @@ namespace deprecation_markers
 
 #if defined(__clang__)
     #define PANDORA_LEGACY_DEPRECATION_PUSH                                                               \
-        _Pragma("clang diagnostic push")                                                                 \
+        _Pragma("clang diagnostic push")                                                                  \
         _Pragma("clang diagnostic warning \"-Wdeprecated-declarations\"")
     #define PANDORA_LEGACY_DEPRECATION_POP                                                                \
         _Pragma("clang diagnostic pop")
 #elif defined(__GNUC__)
     #define PANDORA_LEGACY_DEPRECATION_PUSH                                                               \
-        _Pragma("GCC diagnostic push")                                                                   \
+        _Pragma("GCC diagnostic push")                                                                    \
         _Pragma("GCC diagnostic warning \"-Wdeprecated-declarations\"")
     #define PANDORA_LEGACY_DEPRECATION_POP                                                                \
         _Pragma("GCC diagnostic pop")
