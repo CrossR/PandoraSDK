@@ -104,9 +104,9 @@ Pandora::~Pandora()
 
 StatusCode Pandora::PrepareEvent()
 {
-    PandoraReturnOnError(m_pPandoraImpl->PrepareMCParticles());
-    PandoraReturnOnError(m_pPandoraImpl->PrepareCaloHits());
-    PandoraReturnOnError(m_pPandoraImpl->PrepareTracks());
+    RETURN_ON_ERROR(m_pPandoraImpl->PrepareMCParticles());
+    RETURN_ON_ERROR(m_pPandoraImpl->PrepareCaloHits());
+    RETURN_ON_ERROR(m_pPandoraImpl->PrepareTracks());
 
     return STATUS_CODE_SUCCESS;
 }
@@ -115,13 +115,13 @@ StatusCode Pandora::PrepareEvent()
 
 StatusCode Pandora::ProcessEvent()
 {
-    PandoraReturnOnError(this->PrepareEvent());
+    RETURN_ON_ERROR(this->PrepareEvent());
 
     // Loop over algorithms
     const StringVector &pandoraAlgorithms(m_pPandoraImpl->GetPandoraAlgorithms());
 
     for (const std::string &algorithmName : pandoraAlgorithms)
-        PandoraReturnOnError(m_pPandoraImpl->RunAlgorithm(algorithmName));
+        RETURN_ON_ERROR(m_pPandoraImpl->RunAlgorithm(algorithmName));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -143,7 +143,7 @@ StatusCode Pandora::ReadSettings(const std::string &xmlFileName)
 
         if (!xmlDocument.LoadFile())
         {
-            std::cout << "Pandora::ReadSettings - Invalid xml file.\n" 
+            std::cout << "Pandora::ReadSettings - Invalid xml file.\n"
                       << "    Error: " << xmlDocument.ErrorDesc() << "\n"
                       << "    File:  " << xmlFileName
                       << " line#: " << xmlDocument.ErrorRow() << std::endl;
@@ -153,9 +153,9 @@ StatusCode Pandora::ReadSettings(const std::string &xmlFileName)
         const TiXmlHandle xmlDocumentHandle(&xmlDocument);
         const TiXmlHandle xmlHandle(TiXmlHandle(xmlDocumentHandle.FirstChildElement().Element()));
 
-        PandoraThrowOnError(m_pPandoraImpl->InitializeSettings(&xmlHandle));
-        PandoraThrowOnError(m_pPandoraImpl->InitializeAlgorithms(&xmlHandle));
-        PandoraThrowOnError(m_pPandoraImpl->InitializePlugins(&xmlHandle));
+        THROW_ON_ERROR(m_pPandoraImpl->InitializeSettings(&xmlHandle));
+        THROW_ON_ERROR(m_pPandoraImpl->InitializeAlgorithms(&xmlHandle));
+        THROW_ON_ERROR(m_pPandoraImpl->InitializePlugins(&xmlHandle));
     }
     catch (StatusCodeException &statusCodeException)
     {

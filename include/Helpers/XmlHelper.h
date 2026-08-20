@@ -20,13 +20,13 @@ namespace pandora
 {
 
 #define PandoraRequiredXML(XmlHandle, XmlElementName, Value)                                                 \
-    PandoraReturnOnError(pandora::XmlHelper::ReadValue((XmlHandle), (XmlElementName), (Value)))
+    RETURN_ON_ERROR(pandora::XmlHelper::ReadValue((XmlHandle), (XmlElementName), (Value)))
 
 #define PandoraOptionalXML(XmlHandle, XmlElementName, Value)                                                 \
-    PandoraReturnOnError(pandora::XmlHelper::ReadOptional((XmlHandle), (XmlElementName), (Value)))
+    RETURN_ON_ERROR(pandora::XmlHelper::ReadOptional((XmlHandle), (XmlElementName), (Value)))
 
 #define PandoraOptionalXMLWithDefault(XmlHandle, XmlElementName, Fallback, Value)                           \
-    PandoraReturnOnError(pandora::XmlHelper::ReadOptionalWithDefault((XmlHandle), (XmlElementName), (Fallback), (Value)))
+    RETURN_ON_ERROR(pandora::XmlHelper::ReadOptionalWithDefault((XmlHandle), (XmlElementName), (Fallback), (Value)))
 
 /**
  *  @brief  XmlHelper class

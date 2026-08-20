@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/src/Objects/OrderedCaloHitList.cc
- * 
+ *
  *  @brief  Implementation of the ordered calo hit list class.
- * 
+ *
  *  $Log: $
  */
 
@@ -22,7 +22,7 @@ OrderedCaloHitList::OrderedCaloHitList()
 
 OrderedCaloHitList::OrderedCaloHitList(const OrderedCaloHitList &rhs)
 {
-    PandoraThrowOnError(this->Add(rhs));
+    THROW_ON_ERROR(this->Add(rhs));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ StatusCode OrderedCaloHitList::Add(const OrderedCaloHitList &rhs)
     {
         for (const CaloHit *const pCaloHit : *rhsEntry.second)
         {
-            PandoraReturnOnError(this->Add(pCaloHit, rhsEntry.first));
+            RETURN_ON_ERROR(this->Add(pCaloHit, rhsEntry.first));
         }
     }
 
@@ -56,7 +56,7 @@ StatusCode OrderedCaloHitList::Remove(const OrderedCaloHitList &rhs)
     {
         for (const CaloHit *const pCaloHit : *rhsEntry.second)
         {
-            PandoraReturnOnErrorExcept(this->Remove(pCaloHit, rhsEntry.first), STATUS_CODE_NOT_FOUND);
+            RETURN_ON_ERROR_EXCEPT(this->Remove(pCaloHit, rhsEntry.first), STATUS_CODE_NOT_FOUND);
         }
     }
 
@@ -69,7 +69,7 @@ StatusCode OrderedCaloHitList::Add(const CaloHitList &caloHitList)
 {
     for (const CaloHit *const pCaloHit : caloHitList)
     {
-        PandoraReturnOnErrorExcept(this->Add(pCaloHit, pCaloHit->GetPseudoLayer()), STATUS_CODE_NOT_FOUND);
+        RETURN_ON_ERROR_EXCEPT(this->Add(pCaloHit, pCaloHit->GetPseudoLayer()), STATUS_CODE_NOT_FOUND);
     }
 
     return STATUS_CODE_SUCCESS;
@@ -81,7 +81,7 @@ StatusCode OrderedCaloHitList::Remove(const CaloHitList &caloHitList)
 {
     for (const CaloHit *const pCaloHit : caloHitList)
     {
-        PandoraReturnOnErrorExcept(this->Remove(pCaloHit, pCaloHit->GetPseudoLayer()), STATUS_CODE_NOT_FOUND);
+        RETURN_ON_ERROR_EXCEPT(this->Remove(pCaloHit, pCaloHit->GetPseudoLayer()), STATUS_CODE_NOT_FOUND);
     }
 
     return STATUS_CODE_SUCCESS;

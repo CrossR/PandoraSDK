@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/src/Objects/Cluster.cc
- * 
+ *
  *  @brief  Implementation of the cluster class.
- * 
+ *
  *  $Log: $
  */
 
@@ -255,12 +255,12 @@ Cluster::Cluster(const object_creation::Cluster::Parameters &parameters) :
 
     for (const CaloHit *const pCaloHit : parameters.m_caloHitList)
     {
-        PandoraThrowOnError(this->AddCaloHit(pCaloHit));
+        THROW_ON_ERROR(this->AddCaloHit(pCaloHit));
     }
 
     for (const CaloHit *const pCaloHit : parameters.m_isolatedCaloHitList)
     {
-        PandoraThrowOnError(this->AddIsolatedCaloHit(pCaloHit));
+        THROW_ON_ERROR(this->AddIsolatedCaloHit(pCaloHit));
     }
 }
 
@@ -287,7 +287,7 @@ StatusCode Cluster::AlterMetadata(const object_creation::Cluster::Metadata &meta
 
 StatusCode Cluster::AddCaloHit(const CaloHit *const pCaloHit)
 {
-    PandoraReturnOnError(m_orderedCaloHitList.Add(pCaloHit));
+    RETURN_ON_ERROR(m_orderedCaloHitList.Add(pCaloHit));
 
     this->ResetOutdatedProperties();
 
@@ -296,7 +296,7 @@ StatusCode Cluster::AddCaloHit(const CaloHit *const pCaloHit)
     if (pCaloHit->IsPossibleMip())
         ++m_nPossibleMipHits;
 
-    if (pCaloHit->IsInOuterSamplingLayer()) 
+    if (pCaloHit->IsInOuterSamplingLayer())
         ++m_nCaloHitsInOuterLayer;
 
     const float x(pCaloHit->GetPositionVector().GetX());
@@ -339,7 +339,7 @@ StatusCode Cluster::AddCaloHit(const CaloHit *const pCaloHit)
 
 StatusCode Cluster::RemoveCaloHit(const CaloHit *const pCaloHit)
 {
-    PandoraReturnOnError(m_orderedCaloHitList.Remove(pCaloHit));
+    RETURN_ON_ERROR(m_orderedCaloHitList.Remove(pCaloHit));
 
     if (m_orderedCaloHitList.empty())
         return this->ResetProperties();
@@ -444,7 +444,7 @@ void Cluster::UpdateInitialDirectionCache() const
         m_isDirectionUpToDate = false;
         throw StatusCodeException(STATUS_CODE_NOT_INITIALIZED);
     }
-    
+
     CartesianVector initialDirection(0.f, 0.f, 0.f);
     CaloHitList *const pCaloHitList(m_orderedCaloHitList.begin()->second);
 
@@ -500,7 +500,7 @@ void Cluster::UpdateEnergyCorrectionsCache(const Pandora &pandora) const
     const ParticleId *const pParticleId(pandora.GetPlugins()->GetParticleId());
 
     float correctedElectromagneticEnergy(0.f), correctedHadronicEnergy(0.f), trackComparisonEnergy(0.f);
-    PandoraThrowOnError(pEnergyCorrections->MakeEnergyCorrections(this, correctedElectromagneticEnergy,
+    THROW_ON_ERROR(pEnergyCorrections->MakeEnergyCorrections(this, correctedElectromagneticEnergy,
         correctedHadronicEnergy));
 
     if (pParticleId->IsEmShower(this))
@@ -616,7 +616,7 @@ StatusCode Cluster::AddHitsFromSecondCluster(const Cluster *const pCluster)
         return STATUS_CODE_NOT_ALLOWED;
 
     const OrderedCaloHitList &orderedCaloHitList(pCluster->GetOrderedCaloHitList());
-    PandoraReturnOnError(m_orderedCaloHitList.Add(orderedCaloHitList));
+    RETURN_ON_ERROR(m_orderedCaloHitList.Add(orderedCaloHitList));
 
     const CaloHitList &isolatedCaloHitList(pCluster->GetIsolatedCaloHitList());
     for (const CaloHit *const pCaloHit : isolatedCaloHitList)

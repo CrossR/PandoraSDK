@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/src/Objects/Helix.cc
- * 
+ *
  *  @brief  Implementation of the helix class, based on marlin util helix class.
- * 
+ *
  *  $Log: $
  */
 
@@ -408,8 +408,8 @@ StatusCode Helix::GetDistanceToHelix(const Helix *const pHelix, CartesianVector 
         const float r1(std::sqrt(xSect1 * xSect1 + ySect1 * ySect1));
         const float r2(std::sqrt(xSect2 * xSect2 + ySect2 * ySect2));
 
-        PandoraReturnOnError(this->GetPointOnCircle(r1, referencePoint1, position1));
-        PandoraReturnOnError(pHelix->GetPointOnCircle(r2, referencePoint2, position2));
+        RETURN_ON_ERROR(this->GetPointOnCircle(r1, referencePoint1, position1));
+        RETURN_ON_ERROR(pHelix->GetPointOnCircle(r2, referencePoint2, position2));
     }
     else
     {

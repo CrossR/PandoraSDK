@@ -96,8 +96,8 @@ StatusCode XmlFileWriter::WriteVersion()
         return STATUS_CODE_FAILURE;
 
     m_pCurrentXmlElement = new TiXmlElement("Version");
-    PandoraReturnOnError(this->WriteVariable("MajorVersion", m_fileMajorVersion));
-    PandoraReturnOnError(this->WriteVariable("MinorVersion", m_fileMinorVersion));
+    RETURN_ON_ERROR(this->WriteVariable("MajorVersion", m_fileMajorVersion));
+    RETURN_ON_ERROR(this->WriteVariable("MinorVersion", m_fileMinorVersion));
 
     m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
 
@@ -112,19 +112,19 @@ StatusCode XmlFileWriter::WriteSubDetector(const SubDetector *const pSubDetector
         return STATUS_CODE_FAILURE;
 
     m_pCurrentXmlElement = new TiXmlElement("SubDetector");
-    PandoraReturnOnError(m_pSubDetectorFactory->Write(pSubDetector, *this));
+    RETURN_ON_ERROR(m_pSubDetectorFactory->Write(pSubDetector, *this));
 
-    PandoraReturnOnError(this->WriteVariable("SubDetectorName", pSubDetector->GetSubDetectorName()));
-    PandoraReturnOnError(this->WriteVariable("SubDetectorType", pSubDetector->GetSubDetectorType()));
-    PandoraReturnOnError(this->WriteVariable("InnerRCoordinate", pSubDetector->GetInnerRCoordinate()));
-    PandoraReturnOnError(this->WriteVariable("InnerZCoordinate", pSubDetector->GetInnerZCoordinate()));
-    PandoraReturnOnError(this->WriteVariable("InnerPhiCoordinate", pSubDetector->GetInnerPhiCoordinate()));
-    PandoraReturnOnError(this->WriteVariable("InnerSymmetryOrder", pSubDetector->GetInnerSymmetryOrder()));
-    PandoraReturnOnError(this->WriteVariable("OuterRCoordinate", pSubDetector->GetOuterRCoordinate()));
-    PandoraReturnOnError(this->WriteVariable("OuterZCoordinate", pSubDetector->GetOuterZCoordinate()));
-    PandoraReturnOnError(this->WriteVariable("OuterPhiCoordinate", pSubDetector->GetOuterPhiCoordinate()));
-    PandoraReturnOnError(this->WriteVariable("OuterSymmetryOrder", pSubDetector->GetOuterSymmetryOrder()));
-    PandoraReturnOnError(this->WriteVariable("IsMirroredInZ", pSubDetector->IsMirroredInZ()));
+    RETURN_ON_ERROR(this->WriteVariable("SubDetectorName", pSubDetector->GetSubDetectorName()));
+    RETURN_ON_ERROR(this->WriteVariable("SubDetectorType", pSubDetector->GetSubDetectorType()));
+    RETURN_ON_ERROR(this->WriteVariable("InnerRCoordinate", pSubDetector->GetInnerRCoordinate()));
+    RETURN_ON_ERROR(this->WriteVariable("InnerZCoordinate", pSubDetector->GetInnerZCoordinate()));
+    RETURN_ON_ERROR(this->WriteVariable("InnerPhiCoordinate", pSubDetector->GetInnerPhiCoordinate()));
+    RETURN_ON_ERROR(this->WriteVariable("InnerSymmetryOrder", pSubDetector->GetInnerSymmetryOrder()));
+    RETURN_ON_ERROR(this->WriteVariable("OuterRCoordinate", pSubDetector->GetOuterRCoordinate()));
+    RETURN_ON_ERROR(this->WriteVariable("OuterZCoordinate", pSubDetector->GetOuterZCoordinate()));
+    RETURN_ON_ERROR(this->WriteVariable("OuterPhiCoordinate", pSubDetector->GetOuterPhiCoordinate()));
+    RETURN_ON_ERROR(this->WriteVariable("OuterSymmetryOrder", pSubDetector->GetOuterSymmetryOrder()));
+    RETURN_ON_ERROR(this->WriteVariable("IsMirroredInZ", pSubDetector->IsMirroredInZ()));
 
     const unsigned int nLayers(pSubDetector->GetNLayers());
     const SubDetector::SubDetectorLayerVector &subDetectorLayerVector(pSubDetector->GetSubDetectorLayerVector());
@@ -132,7 +132,7 @@ StatusCode XmlFileWriter::WriteSubDetector(const SubDetector *const pSubDetector
     if (subDetectorLayerVector.size() != nLayers)
         return STATUS_CODE_FAILURE;
 
-    PandoraReturnOnError(this->WriteVariable("NLayers", nLayers));
+    RETURN_ON_ERROR(this->WriteVariable("NLayers", nLayers));
 
     if (nLayers > 0)
     {
@@ -145,9 +145,9 @@ StatusCode XmlFileWriter::WriteSubDetector(const SubDetector *const pSubDetector
             nInteractionLengthsString += TypeToString(subDetectorLayerVector.at(iLayer).GetNInteractionLengths()) + " ";
         }
 
-        PandoraReturnOnError(this->WriteVariable("ClosestDistanceToIp", closestDistanceToIpString));
-        PandoraReturnOnError(this->WriteVariable("NRadiationLengths", nRadiationLengthsString));
-        PandoraReturnOnError(this->WriteVariable("NInteractionLengths", nInteractionLengthsString));
+        RETURN_ON_ERROR(this->WriteVariable("ClosestDistanceToIp", closestDistanceToIpString));
+        RETURN_ON_ERROR(this->WriteVariable("NRadiationLengths", nRadiationLengthsString));
+        RETURN_ON_ERROR(this->WriteVariable("NInteractionLengths", nInteractionLengthsString));
     }
 
     m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
@@ -164,23 +164,23 @@ StatusCode XmlFileWriter::WriteLArTPC(const LArTPC *const pLArTPC)
         return STATUS_CODE_FAILURE;
 
     m_pCurrentXmlElement = new TiXmlElement("LArTPC");
-    PandoraReturnOnError(m_pLArTPCFactory->Write(pLArTPC, *this));
+    RETURN_ON_ERROR(m_pLArTPCFactory->Write(pLArTPC, *this));
 
-    PandoraReturnOnError(this->WriteVariable("LArTPCVolumeId", pLArTPC->GetLArTPCVolumeId()));
-    PandoraReturnOnError(this->WriteVariable("CenterX", pLArTPC->GetCenterX()));
-    PandoraReturnOnError(this->WriteVariable("CenterY", pLArTPC->GetCenterY()));
-    PandoraReturnOnError(this->WriteVariable("CenterZ", pLArTPC->GetCenterZ()));
-    PandoraReturnOnError(this->WriteVariable("WidthX", pLArTPC->GetWidthX()));
-    PandoraReturnOnError(this->WriteVariable("WidthY", pLArTPC->GetWidthY()));
-    PandoraReturnOnError(this->WriteVariable("WidthZ", pLArTPC->GetWidthZ()));
-    PandoraReturnOnError(this->WriteVariable("WirePitchU", pLArTPC->GetWirePitchU()));
-    PandoraReturnOnError(this->WriteVariable("WirePitchV", pLArTPC->GetWirePitchV()));
-    PandoraReturnOnError(this->WriteVariable("WirePitchW", pLArTPC->GetWirePitchW()));
-    PandoraReturnOnError(this->WriteVariable("WireAngleU", pLArTPC->GetWireAngleU()));
-    PandoraReturnOnError(this->WriteVariable("WireAngleV", pLArTPC->GetWireAngleV()));
-    PandoraReturnOnError(this->WriteVariable("WireAngleW", pLArTPC->GetWireAngleW()));
-    PandoraReturnOnError(this->WriteVariable("SigmaUVW", pLArTPC->GetSigmaUVW()));
-    PandoraReturnOnError(this->WriteVariable("IsDriftInPositiveX", pLArTPC->IsDriftInPositiveX()));
+    RETURN_ON_ERROR(this->WriteVariable("LArTPCVolumeId", pLArTPC->GetLArTPCVolumeId()));
+    RETURN_ON_ERROR(this->WriteVariable("CenterX", pLArTPC->GetCenterX()));
+    RETURN_ON_ERROR(this->WriteVariable("CenterY", pLArTPC->GetCenterY()));
+    RETURN_ON_ERROR(this->WriteVariable("CenterZ", pLArTPC->GetCenterZ()));
+    RETURN_ON_ERROR(this->WriteVariable("WidthX", pLArTPC->GetWidthX()));
+    RETURN_ON_ERROR(this->WriteVariable("WidthY", pLArTPC->GetWidthY()));
+    RETURN_ON_ERROR(this->WriteVariable("WidthZ", pLArTPC->GetWidthZ()));
+    RETURN_ON_ERROR(this->WriteVariable("WirePitchU", pLArTPC->GetWirePitchU()));
+    RETURN_ON_ERROR(this->WriteVariable("WirePitchV", pLArTPC->GetWirePitchV()));
+    RETURN_ON_ERROR(this->WriteVariable("WirePitchW", pLArTPC->GetWirePitchW()));
+    RETURN_ON_ERROR(this->WriteVariable("WireAngleU", pLArTPC->GetWireAngleU()));
+    RETURN_ON_ERROR(this->WriteVariable("WireAngleV", pLArTPC->GetWireAngleV()));
+    RETURN_ON_ERROR(this->WriteVariable("WireAngleW", pLArTPC->GetWireAngleW()));
+    RETURN_ON_ERROR(this->WriteVariable("SigmaUVW", pLArTPC->GetSigmaUVW()));
+    RETURN_ON_ERROR(this->WriteVariable("IsDriftInPositiveX", pLArTPC->IsDriftInPositiveX()));
 
     m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
     m_pCurrentXmlElement = nullptr;
@@ -207,13 +207,13 @@ StatusCode XmlFileWriter::WriteDetectorGap(const DetectorGap *const pDetectorGap
     if (nullptr != pLineGap)
     {
         m_pCurrentXmlElement = new TiXmlElement("LineGap");
-        PandoraReturnOnError(m_pLineGapFactory->Write(pLineGap, *this));
+        RETURN_ON_ERROR(m_pLineGapFactory->Write(pLineGap, *this));
 
-        PandoraReturnOnError(this->WriteVariable("LineGapType", pLineGap->GetLineGapType()));
-        PandoraReturnOnError(this->WriteVariable("LineStartX", pLineGap->GetLineStartX()));
-        PandoraReturnOnError(this->WriteVariable("LineEndX", pLineGap->GetLineEndX()));
-        PandoraReturnOnError(this->WriteVariable("LineStartZ", pLineGap->GetLineStartZ()));
-        PandoraReturnOnError(this->WriteVariable("LineEndZ", pLineGap->GetLineEndZ()));
+        RETURN_ON_ERROR(this->WriteVariable("LineGapType", pLineGap->GetLineGapType()));
+        RETURN_ON_ERROR(this->WriteVariable("LineStartX", pLineGap->GetLineStartX()));
+        RETURN_ON_ERROR(this->WriteVariable("LineEndX", pLineGap->GetLineEndX()));
+        RETURN_ON_ERROR(this->WriteVariable("LineStartZ", pLineGap->GetLineStartZ()));
+        RETURN_ON_ERROR(this->WriteVariable("LineEndZ", pLineGap->GetLineEndZ()));
 
         m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
         m_pCurrentXmlElement = nullptr;
@@ -221,12 +221,12 @@ StatusCode XmlFileWriter::WriteDetectorGap(const DetectorGap *const pDetectorGap
     else if (nullptr != pBoxGap)
     {
         m_pCurrentXmlElement = new TiXmlElement("BoxGap");
-        PandoraReturnOnError(m_pBoxGapFactory->Write(pBoxGap, *this));
+        RETURN_ON_ERROR(m_pBoxGapFactory->Write(pBoxGap, *this));
 
-        PandoraReturnOnError(this->WriteVariable("Vertex", pBoxGap->GetVertex()));
-        PandoraReturnOnError(this->WriteVariable("Side1", pBoxGap->GetSide1()));
-        PandoraReturnOnError(this->WriteVariable("Side2", pBoxGap->GetSide2()));
-        PandoraReturnOnError(this->WriteVariable("Side3", pBoxGap->GetSide3()));
+        RETURN_ON_ERROR(this->WriteVariable("Vertex", pBoxGap->GetVertex()));
+        RETURN_ON_ERROR(this->WriteVariable("Side1", pBoxGap->GetSide1()));
+        RETURN_ON_ERROR(this->WriteVariable("Side2", pBoxGap->GetSide2()));
+        RETURN_ON_ERROR(this->WriteVariable("Side3", pBoxGap->GetSide3()));
 
         m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
         m_pCurrentXmlElement = nullptr;
@@ -234,16 +234,16 @@ StatusCode XmlFileWriter::WriteDetectorGap(const DetectorGap *const pDetectorGap
     else if (nullptr != pConcentricGap)
     {
         m_pCurrentXmlElement = new TiXmlElement("ConcentricGap");
-        PandoraReturnOnError(m_pConcentricGapFactory->Write(pConcentricGap, *this));
+        RETURN_ON_ERROR(m_pConcentricGapFactory->Write(pConcentricGap, *this));
 
-        PandoraReturnOnError(this->WriteVariable("MinZCoordinate", pConcentricGap->GetMinZCoordinate()));
-        PandoraReturnOnError(this->WriteVariable("MaxZCoordinate", pConcentricGap->GetMaxZCoordinate()));
-        PandoraReturnOnError(this->WriteVariable("InnerRCoordinate", pConcentricGap->GetInnerRCoordinate()));
-        PandoraReturnOnError(this->WriteVariable("InnerPhiCoordinate", pConcentricGap->GetInnerPhiCoordinate()));
-        PandoraReturnOnError(this->WriteVariable("InnerSymmetryOrder", pConcentricGap->GetInnerSymmetryOrder()));
-        PandoraReturnOnError(this->WriteVariable("OuterRCoordinate", pConcentricGap->GetOuterRCoordinate()));
-        PandoraReturnOnError(this->WriteVariable("OuterPhiCoordinate", pConcentricGap->GetOuterPhiCoordinate()));
-        PandoraReturnOnError(this->WriteVariable("OuterSymmetryOrder", pConcentricGap->GetOuterSymmetryOrder()));
+        RETURN_ON_ERROR(this->WriteVariable("MinZCoordinate", pConcentricGap->GetMinZCoordinate()));
+        RETURN_ON_ERROR(this->WriteVariable("MaxZCoordinate", pConcentricGap->GetMaxZCoordinate()));
+        RETURN_ON_ERROR(this->WriteVariable("InnerRCoordinate", pConcentricGap->GetInnerRCoordinate()));
+        RETURN_ON_ERROR(this->WriteVariable("InnerPhiCoordinate", pConcentricGap->GetInnerPhiCoordinate()));
+        RETURN_ON_ERROR(this->WriteVariable("InnerSymmetryOrder", pConcentricGap->GetInnerSymmetryOrder()));
+        RETURN_ON_ERROR(this->WriteVariable("OuterRCoordinate", pConcentricGap->GetOuterRCoordinate()));
+        RETURN_ON_ERROR(this->WriteVariable("OuterPhiCoordinate", pConcentricGap->GetOuterPhiCoordinate()));
+        RETURN_ON_ERROR(this->WriteVariable("OuterSymmetryOrder", pConcentricGap->GetOuterSymmetryOrder()));
 
         m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
         m_pCurrentXmlElement = nullptr;
@@ -264,29 +264,29 @@ StatusCode XmlFileWriter::WriteCaloHit(const CaloHit *const pCaloHit)
         return STATUS_CODE_FAILURE;
 
     m_pCurrentXmlElement = new TiXmlElement("CaloHit");
-    PandoraReturnOnError(m_pCaloHitFactory->Write(pCaloHit, *this));
+    RETURN_ON_ERROR(m_pCaloHitFactory->Write(pCaloHit, *this));
 
     const CellGeometry cellGeometry(pCaloHit->GetCellGeometry());
-    PandoraReturnOnError(this->WriteVariable("CellGeometry", cellGeometry));
-    PandoraReturnOnError(this->WriteVariable("PositionVector", pCaloHit->GetPositionVector()));
-    PandoraReturnOnError(this->WriteVariable("ExpectedDirection", pCaloHit->GetExpectedDirection()));
-    PandoraReturnOnError(this->WriteVariable("CellNormalVector", pCaloHit->GetCellNormalVector()));
-    PandoraReturnOnError(this->WriteVariable("CellThickness", pCaloHit->GetCellThickness()));
-    PandoraReturnOnError(this->WriteVariable("NCellRadiationLengths", pCaloHit->GetNCellRadiationLengths()));
-    PandoraReturnOnError(this->WriteVariable("NCellInteractionLengths", pCaloHit->GetNCellInteractionLengths()));
-    PandoraReturnOnError(this->WriteVariable("Time", pCaloHit->GetTime()));
-    PandoraReturnOnError(this->WriteVariable("InputEnergy", pCaloHit->GetInputEnergy()));
-    PandoraReturnOnError(this->WriteVariable("MipEquivalentEnergy", pCaloHit->GetMipEquivalentEnergy()));
-    PandoraReturnOnError(this->WriteVariable("ElectromagneticEnergy", pCaloHit->GetElectromagneticEnergy()));
-    PandoraReturnOnError(this->WriteVariable("HadronicEnergy", pCaloHit->GetHadronicEnergy()));
-    PandoraReturnOnError(this->WriteVariable("IsDigital", pCaloHit->IsDigital()));
-    PandoraReturnOnError(this->WriteVariable("HitType", pCaloHit->GetHitType()));
-    PandoraReturnOnError(this->WriteVariable("HitRegion", pCaloHit->GetHitRegion()));
-    PandoraReturnOnError(this->WriteVariable("Layer", pCaloHit->GetLayer()));
-    PandoraReturnOnError(this->WriteVariable("IsInOuterSamplingLayer", pCaloHit->IsInOuterSamplingLayer()));
-    PandoraReturnOnError(this->WriteVariable("ParentCaloHitAddress", pCaloHit->GetParentAddress()));
-    PandoraReturnOnError(this->WriteVariable("CellSize0", pCaloHit->GetCellSize0()));
-    PandoraReturnOnError(this->WriteVariable("CellSize1", pCaloHit->GetCellSize1()));
+    RETURN_ON_ERROR(this->WriteVariable("CellGeometry", cellGeometry));
+    RETURN_ON_ERROR(this->WriteVariable("PositionVector", pCaloHit->GetPositionVector()));
+    RETURN_ON_ERROR(this->WriteVariable("ExpectedDirection", pCaloHit->GetExpectedDirection()));
+    RETURN_ON_ERROR(this->WriteVariable("CellNormalVector", pCaloHit->GetCellNormalVector()));
+    RETURN_ON_ERROR(this->WriteVariable("CellThickness", pCaloHit->GetCellThickness()));
+    RETURN_ON_ERROR(this->WriteVariable("NCellRadiationLengths", pCaloHit->GetNCellRadiationLengths()));
+    RETURN_ON_ERROR(this->WriteVariable("NCellInteractionLengths", pCaloHit->GetNCellInteractionLengths()));
+    RETURN_ON_ERROR(this->WriteVariable("Time", pCaloHit->GetTime()));
+    RETURN_ON_ERROR(this->WriteVariable("InputEnergy", pCaloHit->GetInputEnergy()));
+    RETURN_ON_ERROR(this->WriteVariable("MipEquivalentEnergy", pCaloHit->GetMipEquivalentEnergy()));
+    RETURN_ON_ERROR(this->WriteVariable("ElectromagneticEnergy", pCaloHit->GetElectromagneticEnergy()));
+    RETURN_ON_ERROR(this->WriteVariable("HadronicEnergy", pCaloHit->GetHadronicEnergy()));
+    RETURN_ON_ERROR(this->WriteVariable("IsDigital", pCaloHit->IsDigital()));
+    RETURN_ON_ERROR(this->WriteVariable("HitType", pCaloHit->GetHitType()));
+    RETURN_ON_ERROR(this->WriteVariable("HitRegion", pCaloHit->GetHitRegion()));
+    RETURN_ON_ERROR(this->WriteVariable("Layer", pCaloHit->GetLayer()));
+    RETURN_ON_ERROR(this->WriteVariable("IsInOuterSamplingLayer", pCaloHit->IsInOuterSamplingLayer()));
+    RETURN_ON_ERROR(this->WriteVariable("ParentCaloHitAddress", pCaloHit->GetParentAddress()));
+    RETURN_ON_ERROR(this->WriteVariable("CellSize0", pCaloHit->GetCellSize0()));
+    RETURN_ON_ERROR(this->WriteVariable("CellSize1", pCaloHit->GetCellSize1()));
 
     m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
     m_pCurrentXmlElement = nullptr;
@@ -302,23 +302,23 @@ StatusCode XmlFileWriter::WriteTrack(const Track *const pTrack)
         return STATUS_CODE_FAILURE;
 
     m_pCurrentXmlElement = new TiXmlElement("Track");
-    PandoraReturnOnError(m_pTrackFactory->Write(pTrack, *this));
+    RETURN_ON_ERROR(m_pTrackFactory->Write(pTrack, *this));
 
-    PandoraReturnOnError(this->WriteVariable("D0", pTrack->GetD0()));
-    PandoraReturnOnError(this->WriteVariable("Z0", pTrack->GetZ0()));
-    PandoraReturnOnError(this->WriteVariable("ParticleId", pTrack->GetParticleId()));
-    PandoraReturnOnError(this->WriteVariable("Charge", pTrack->GetCharge()));
-    PandoraReturnOnError(this->WriteVariable("Mass", pTrack->GetMass()));
-    PandoraReturnOnError(this->WriteVariable("MomentumAtDca", pTrack->GetMomentumAtDca()));
-    PandoraReturnOnError(this->WriteVariable("TrackStateAtStart", pTrack->GetTrackStateAtStart()));
-    PandoraReturnOnError(this->WriteVariable("TrackStateAtEnd", pTrack->GetTrackStateAtEnd()));
-    PandoraReturnOnError(this->WriteVariable("TrackStateAtCalorimeter", pTrack->GetTrackStateAtCalorimeter()));
-    PandoraReturnOnError(this->WriteVariable("TimeAtCalorimeter", pTrack->GetTimeAtCalorimeter()));
-    PandoraReturnOnError(this->WriteVariable("ReachesCalorimeter", pTrack->ReachesCalorimeter()));
-    PandoraReturnOnError(this->WriteVariable("IsProjectedToEndCap", pTrack->IsProjectedToEndCap()));
-    PandoraReturnOnError(this->WriteVariable("CanFormPfo", pTrack->CanFormPfo()));
-    PandoraReturnOnError(this->WriteVariable("CanFormClusterlessPfo", pTrack->CanFormClusterlessPfo()));
-    PandoraReturnOnError(this->WriteVariable("ParentTrackAddress", pTrack->GetParentAddress()));
+    RETURN_ON_ERROR(this->WriteVariable("D0", pTrack->GetD0()));
+    RETURN_ON_ERROR(this->WriteVariable("Z0", pTrack->GetZ0()));
+    RETURN_ON_ERROR(this->WriteVariable("ParticleId", pTrack->GetParticleId()));
+    RETURN_ON_ERROR(this->WriteVariable("Charge", pTrack->GetCharge()));
+    RETURN_ON_ERROR(this->WriteVariable("Mass", pTrack->GetMass()));
+    RETURN_ON_ERROR(this->WriteVariable("MomentumAtDca", pTrack->GetMomentumAtDca()));
+    RETURN_ON_ERROR(this->WriteVariable("TrackStateAtStart", pTrack->GetTrackStateAtStart()));
+    RETURN_ON_ERROR(this->WriteVariable("TrackStateAtEnd", pTrack->GetTrackStateAtEnd()));
+    RETURN_ON_ERROR(this->WriteVariable("TrackStateAtCalorimeter", pTrack->GetTrackStateAtCalorimeter()));
+    RETURN_ON_ERROR(this->WriteVariable("TimeAtCalorimeter", pTrack->GetTimeAtCalorimeter()));
+    RETURN_ON_ERROR(this->WriteVariable("ReachesCalorimeter", pTrack->ReachesCalorimeter()));
+    RETURN_ON_ERROR(this->WriteVariable("IsProjectedToEndCap", pTrack->IsProjectedToEndCap()));
+    RETURN_ON_ERROR(this->WriteVariable("CanFormPfo", pTrack->CanFormPfo()));
+    RETURN_ON_ERROR(this->WriteVariable("CanFormClusterlessPfo", pTrack->CanFormClusterlessPfo()));
+    RETURN_ON_ERROR(this->WriteVariable("ParentTrackAddress", pTrack->GetParentAddress()));
 
     m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
     m_pCurrentXmlElement = nullptr;
@@ -334,15 +334,15 @@ StatusCode XmlFileWriter::WriteMCParticle(const MCParticle *const pMCParticle)
         return STATUS_CODE_FAILURE;
 
     m_pCurrentXmlElement = new TiXmlElement("MCParticle");
-    PandoraReturnOnError(m_pMCParticleFactory->Write(pMCParticle, *this));
+    RETURN_ON_ERROR(m_pMCParticleFactory->Write(pMCParticle, *this));
 
-    PandoraReturnOnError(this->WriteVariable("Energy", pMCParticle->GetEnergy()));
-    PandoraReturnOnError(this->WriteVariable("Momentum", pMCParticle->GetMomentum()));
-    PandoraReturnOnError(this->WriteVariable("Vertex", pMCParticle->GetVertex()));
-    PandoraReturnOnError(this->WriteVariable("Endpoint", pMCParticle->GetEndpoint()));
-    PandoraReturnOnError(this->WriteVariable("ParticleId", pMCParticle->GetParticleId()));
-    PandoraReturnOnError(this->WriteVariable("MCParticleType", pMCParticle->GetMCParticleType()));
-    PandoraReturnOnError(this->WriteVariable("Uid", pMCParticle->GetUid()));
+    RETURN_ON_ERROR(this->WriteVariable("Energy", pMCParticle->GetEnergy()));
+    RETURN_ON_ERROR(this->WriteVariable("Momentum", pMCParticle->GetMomentum()));
+    RETURN_ON_ERROR(this->WriteVariable("Vertex", pMCParticle->GetVertex()));
+    RETURN_ON_ERROR(this->WriteVariable("Endpoint", pMCParticle->GetEndpoint()));
+    RETURN_ON_ERROR(this->WriteVariable("ParticleId", pMCParticle->GetParticleId()));
+    RETURN_ON_ERROR(this->WriteVariable("MCParticleType", pMCParticle->GetMCParticleType()));
+    RETURN_ON_ERROR(this->WriteVariable("Uid", pMCParticle->GetUid()));
 
     m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
     m_pCurrentXmlElement = nullptr;
@@ -359,10 +359,10 @@ StatusCode XmlFileWriter::WriteRelationship(const RelationshipId relationshipId,
 
     m_pCurrentXmlElement = new TiXmlElement("Relationship");
 
-    PandoraReturnOnError(this->WriteVariable("RelationshipId", relationshipId));
-    PandoraReturnOnError(this->WriteVariable("Address1", address1));
-    PandoraReturnOnError(this->WriteVariable("Address2", address2));
-    PandoraReturnOnError(this->WriteVariable("Weight", weight));
+    RETURN_ON_ERROR(this->WriteVariable("RelationshipId", relationshipId));
+    RETURN_ON_ERROR(this->WriteVariable("Address1", address1));
+    RETURN_ON_ERROR(this->WriteVariable("Address2", address2));
+    RETURN_ON_ERROR(this->WriteVariable("Weight", weight));
 
     m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
     m_pCurrentXmlElement = nullptr;
@@ -379,9 +379,9 @@ StatusCode XmlFileWriter::WriteEventInformation()
 
     m_pCurrentXmlElement = new TiXmlElement("EventInfo");
 
-    PandoraReturnOnError(this->WriteVariable("Run", m_pPandora->GetRun()));
-    PandoraReturnOnError(this->WriteVariable("Subrun", m_pPandora->GetSubrun()));
-    PandoraReturnOnError(this->WriteVariable("Event", m_pPandora->GetEvent()));
+    RETURN_ON_ERROR(this->WriteVariable("Run", m_pPandora->GetRun()));
+    RETURN_ON_ERROR(this->WriteVariable("Subrun", m_pPandora->GetSubrun()));
+    RETURN_ON_ERROR(this->WriteVariable("Event", m_pPandora->GetEvent()));
 
     m_pContainerXmlElement->LinkEndChild(m_pCurrentXmlElement);
     m_pCurrentXmlElement = nullptr;

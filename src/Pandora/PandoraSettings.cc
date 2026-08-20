@@ -41,7 +41,7 @@ StatusCode PandoraSettings::Initialize(const TiXmlHandle *const pXmlHandle)
 {
     try
     {
-        PandoraThrowOnError(PandoraSettings::ReadGlobalSettings(pXmlHandle));
+        THROW_ON_ERROR(PandoraSettings::ReadGlobalSettings(pXmlHandle));
 
         return STATUS_CODE_SUCCESS;
     }

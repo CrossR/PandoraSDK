@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/src/Helpers/XmlHelper.cc
- * 
+ *
  *  @brief  Implementation of the xml helper class.
- * 
+ *
  *  $Log: $
  */
 
@@ -57,7 +57,7 @@ StatusCode XmlHelper::ProcessAlgorithmList(const Algorithm &algorithm, const TiX
         pXmlElement = pXmlElement->NextSiblingElement("algorithm"))
     {
         std::string algorithmName;
-        PandoraReturnOnError(PandoraContentApi::CreateDaughterAlgorithm(algorithm, pXmlElement, algorithmName));
+        RETURN_ON_ERROR(PandoraContentApi::CreateDaughterAlgorithm(algorithm, pXmlElement, algorithmName));
         algorithmNames.push_back(algorithmName);
     }
 
@@ -110,7 +110,7 @@ StatusCode XmlHelper::ProcessAlgorithmToolList(const Algorithm &algorithm, const
         pXmlElement = pXmlElement->NextSiblingElement("tool"))
     {
         AlgorithmTool *pAlgorithmTool(nullptr);
-        PandoraReturnOnError(PandoraContentApi::CreateAlgorithmTool(algorithm, pXmlElement, pAlgorithmTool));
+        RETURN_ON_ERROR(PandoraContentApi::CreateAlgorithmTool(algorithm, pXmlElement, pAlgorithmTool));
         algorithmToolVector.push_back(pAlgorithmTool);
     }
 

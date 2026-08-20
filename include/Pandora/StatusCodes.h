@@ -22,28 +22,28 @@ namespace pandora
 {
 namespace deprecation_markers
 {
-    [[deprecated("Legacy macro. Use 'PandoraReturn' instead.")]]
+    [[deprecated("Legacy macro.")]]
     inline void PANDORA_RETURN_is_deprecated() {}
 
-    [[deprecated("Legacy macro. Use 'PandoraReturnIf' instead.")]]
+    [[deprecated("Legacy macro. Use 'RETURN_IF' instead.")]]
     inline void PANDORA_RETURN_IF_is_deprecated() {}
 
-    [[deprecated("Legacy macro. Use 'PandoraReturnOnError' instead.")]]
+    [[deprecated("Legacy macro. Use 'RETURN_ON_ERROR' instead.")]]
     inline void PANDORA_RETURN_RESULT_IF_is_deprecated() {}
 
-    [[deprecated("Legacy macro. Use 'PandoraReturnOnErrorExcept' instead.")]]
+    [[deprecated("Legacy macro. Use 'RETURN_ON_ERROR_EXCEPT' instead.")]]
     inline void PANDORA_RETURN_RESULT_IF_AND_IF_is_deprecated() {}
 
-    [[deprecated("Legacy macro. Use 'PandoraThrowOnError' or 'PandoraThrowIf' instead.")]]
+    [[deprecated("Legacy macro.")]]
     inline void PANDORA_THROW_is_deprecated() {}
 
-    [[deprecated("Legacy macro. Use 'PandoraThrowIf' instead.")]]
+    [[deprecated("Legacy macro. Use 'THROW_IF' instead.")]]
     inline void PANDORA_THROW_IF_is_deprecated() {}
 
-    [[deprecated("Legacy macro. Use 'PandoraThrowOnError' instead.")]]
+    [[deprecated("Legacy macro. Use 'THROW_ON_ERROR' instead.")]]
     inline void PANDORA_THROW_RESULT_IF_is_deprecated() {}
 
-    [[deprecated("Legacy macro. Use 'PandoraThrowOnErrorExcept' instead.")]]
+    [[deprecated("Legacy macro. Use 'THROW_ON_ERROR_EXCEPT' instead.")]]
     inline void PANDORA_THROW_RESULT_IF_AND_IF_is_deprecated() {}
 }
 }
@@ -169,13 +169,7 @@ namespace pandora::detail
     }                                                                                                                                     \
 }
 
-#define PandoraReturn(StatusCode)                                                                                                                   \
-{                                                                                                                                                   \
-    pandora::detail::LogLocation(__FUNCTION__, __FILE__, __LINE__);                                                                                 \
-    return StatusCode;                                                                                                                              \
-}
-
-#define PandoraReturnIf(StatusCode, Condition)                                                                                                      \
+#define RETURN_IF(StatusCode, Condition)                                                                                                      \
 {                                                                                                                                                   \
     if (Condition)                                                                                                                                  \
     {                                                                                                                                               \
@@ -185,7 +179,7 @@ namespace pandora::detail
     }                                                                                                                                               \
 }
 
-#define PandoraReturnOnError(Command)                                                                                                               \
+#define RETURN_ON_ERROR(Command)                                                                                                               \
 {                                                                                                                                                   \
     if (const auto _status = (Command); _status != pandora::STATUS_CODE_SUCCESS)                                                                    \
     {                                                                                                                                               \
@@ -194,7 +188,7 @@ namespace pandora::detail
     }                                                                                                                                               \
 }
 
-#define PandoraReturnOnErrorExcept(Command, AllowedCode)                                                                                            \
+#define RETURN_ON_ERROR_EXCEPT(Command, AllowedCode)                                                                                            \
 {                                                                                                                                                   \
     if (const auto _status = (Command); _status != pandora::STATUS_CODE_SUCCESS && _status != (AllowedCode))                                        \
     {                                                                                                                                               \
@@ -203,7 +197,7 @@ namespace pandora::detail
     }                                                                                                                                               \
 }
 
-#define PandoraThrowIf(StatusCode, Condition)                                                                                                       \
+#define THROW_IF(StatusCode, Condition)                                                                                                       \
 {                                                                                                                                                   \
     if (Condition)                                                                                                                                  \
     {                                                                                                                                               \
@@ -213,7 +207,7 @@ namespace pandora::detail
     }                                                                                                                                               \
 }
 
-#define PandoraThrowOnError(Command)                                                                                                                \
+#define THROW_ON_ERROR(Command)                                                                                                                \
 {                                                                                                                                                   \
     if (const auto _status = (Command); _status != pandora::STATUS_CODE_SUCCESS)                                                                    \
     {                                                                                                                                               \
@@ -222,7 +216,7 @@ namespace pandora::detail
     }                                                                                                                                               \
 }
 
-#define PandoraThrowOnErrorExcept(Command, AllowedCode)                                                                                             \
+#define THROW_ON_ERROR_EXCEPT(Command, AllowedCode)                                                                                             \
 {                                                                                                                                                   \
     if (const auto _status = (Command); _status != pandora::STATUS_CODE_SUCCESS && _status != (AllowedCode))                                        \
     {                                                                                                                                               \

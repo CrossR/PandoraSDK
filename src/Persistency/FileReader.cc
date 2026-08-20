@@ -32,10 +32,10 @@ StatusCode FileReader::ReadGlobalHeader()
 {
     if (HEADER_CONTAINER != this->GetNextContainerId())
     {
-        PandoraReturnOnError(this->GoToGlobalHeader());
+        RETURN_ON_ERROR(this->GoToGlobalHeader());
     }
 
-    PandoraReturnOnError(this->ReadHeader());
+    RETURN_ON_ERROR(this->ReadHeader());
 
     if (HEADER_CONTAINER != m_containerId)
         return STATUS_CODE_FAILURE;
@@ -61,10 +61,10 @@ StatusCode FileReader::ReadGeometry()
 {
     if (GEOMETRY_CONTAINER != this->GetNextContainerId())
     {
-        PandoraReturnOnError(this->GoToNextGeometry());
+        RETURN_ON_ERROR(this->GoToNextGeometry());
     }
 
-    PandoraReturnOnError(this->ReadHeader());
+    RETURN_ON_ERROR(this->ReadHeader());
 
     if (GEOMETRY_CONTAINER != m_containerId)
         return STATUS_CODE_FAILURE;
@@ -90,10 +90,10 @@ StatusCode FileReader::ReadEvent()
 {
     if (EVENT_CONTAINER != this->GetNextContainerId())
     {
-        PandoraReturnOnError(this->GoToNextEvent());
+        RETURN_ON_ERROR(this->GoToNextEvent());
     }
 
-    PandoraReturnOnError(this->ReadHeader());
+    RETURN_ON_ERROR(this->ReadHeader());
 
     try
     {
@@ -116,7 +116,7 @@ StatusCode FileReader::GoToGlobalHeader()
 {
     do
     {
-        PandoraReturnOnError(this->GoToNextContainer());
+        RETURN_ON_ERROR(this->GoToNextContainer());
     } while (HEADER_CONTAINER != this->GetNextContainerId());
 
     return STATUS_CODE_SUCCESS;
@@ -128,7 +128,7 @@ StatusCode FileReader::GoToNextGeometry()
 {
     do
     {
-        PandoraReturnOnError(this->GoToNextContainer());
+        RETURN_ON_ERROR(this->GoToNextContainer());
     } while (GEOMETRY_CONTAINER != this->GetNextContainerId());
 
     return STATUS_CODE_SUCCESS;
@@ -140,7 +140,7 @@ StatusCode FileReader::GoToNextEvent()
 {
     do
     {
-        PandoraReturnOnError(this->GoToNextContainer());
+        RETURN_ON_ERROR(this->GoToNextContainer());
     } while (EVENT_CONTAINER != this->GetNextContainerId());
 
     return STATUS_CODE_SUCCESS;

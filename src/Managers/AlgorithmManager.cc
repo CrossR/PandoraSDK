@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/src/Managers/AlgorithmManager.cc
- * 
+ *
  *  @brief  Implementation of the algorithm manager class.
- * 
+ *
  *  $Log: $
  */
 
@@ -26,8 +26,8 @@ namespace pandora
 AlgorithmManager::AlgorithmManager(const Pandora *const pPandora) :
     m_pPandora(pPandora)
 {
-    PandoraThrowOnError(RegisterAlgorithmFactory("EventReading", new EventReadingAlgorithm::Factory));
-    PandoraThrowOnError(RegisterAlgorithmFactory("EventWriting", new EventWritingAlgorithm::Factory));
+    THROW_ON_ERROR(RegisterAlgorithmFactory("EventReading", new EventReadingAlgorithm::Factory));
+    THROW_ON_ERROR(RegisterAlgorithmFactory("EventWriting", new EventWritingAlgorithm::Factory));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ StatusCode AlgorithmManager::InitializeAlgorithms(const TiXmlHandle *const pXmlH
         pXmlElement = pXmlElement->NextSiblingElement("algorithm"))
     {
         std::string algorithmName;
-        PandoraReturnOnError(CreateAlgorithm(pXmlElement, algorithmName));
+        RETURN_ON_ERROR(CreateAlgorithm(pXmlElement, algorithmName));
         m_pandoraAlgorithms.push_back(algorithmName);
     }
 
@@ -121,7 +121,7 @@ StatusCode AlgorithmManager::CreateAlgorithm(TiXmlElement *const pXmlElement, st
         ss << std::setw(4) << std::setfill('0') << (1 + m_algorithmMap.size());
         algorithmName = "Alg" + ss.str();
 
-        PandoraThrowOnError(pLocalAlgorithm->RegisterDetails(m_pPandora, iter->first, algorithmName));
+        THROW_ON_ERROR(pLocalAlgorithm->RegisterDetails(m_pPandora, iter->first, algorithmName));
 
         if (!m_algorithmMap.insert(AlgorithmMap::value_type(algorithmName, pLocalAlgorithm)).second)
             throw StatusCodeException(STATUS_CODE_FAILURE);
@@ -132,8 +132,8 @@ StatusCode AlgorithmManager::CreateAlgorithm(TiXmlElement *const pXmlElement, st
             throw StatusCodeException(STATUS_CODE_FAILURE);
         }
 
-        PandoraThrowOnError(pLocalAlgorithm->ReadSettings(TiXmlHandle(pXmlElement)));
-        PandoraThrowOnError(pLocalAlgorithm->Initialize());
+        THROW_ON_ERROR(pLocalAlgorithm->ReadSettings(TiXmlHandle(pXmlElement)));
+        THROW_ON_ERROR(pLocalAlgorithm->Initialize());
     }
     catch (StatusCodeException &statusCodeException)
     {
@@ -173,9 +173,9 @@ StatusCode AlgorithmManager::CreateAlgorithmTool(TiXmlElement *const pXmlElement
         ss << std::setw(4) << std::setfill('0') << (1 + m_algorithmToolVector.size());
         const std::string toolInstanceName("Tool" + ss.str());
 
-        PandoraThrowOnError(pLocalAlgorithmTool->RegisterDetails(m_pPandora, iter->first, toolInstanceName));
-        PandoraThrowOnError(pLocalAlgorithmTool->ReadSettings(TiXmlHandle(pXmlElement)));
-        PandoraThrowOnError(pLocalAlgorithmTool->Initialize());
+        THROW_ON_ERROR(pLocalAlgorithmTool->RegisterDetails(m_pPandora, iter->first, toolInstanceName));
+        THROW_ON_ERROR(pLocalAlgorithmTool->ReadSettings(TiXmlHandle(pXmlElement)));
+        THROW_ON_ERROR(pLocalAlgorithmTool->Initialize());
 
         m_algorithmToolVector.push_back(pLocalAlgorithmTool);
         pAlgorithmTool = pLocalAlgorithmTool;
@@ -225,10 +225,10 @@ StatusCode AlgorithmManager::FindSpecificAlgorithmInstance(TiXmlElement *const p
 StatusCode AlgorithmManager::ResetForNextEvent()
 {
     for (AlgorithmMap::value_type &mapEntry : m_algorithmMap)
-        PandoraReturnOnError(mapEntry.second->Reset());
+        RETURN_ON_ERROR(mapEntry.second->Reset());
 
     for (AlgorithmTool *const pAlgorithmTool : m_algorithmToolVector)
-        PandoraReturnOnError(pAlgorithmTool->Reset());
+        RETURN_ON_ERROR(pAlgorithmTool->Reset());
 
     return STATUS_CODE_SUCCESS;
 }

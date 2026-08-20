@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/src/Api/PandoraContentApiImpl.cc
- * 
+ *
  *  @brief  Implementation of the pandora content api class.
- * 
+ *
  *  $Log: $
  */
 
@@ -137,9 +137,9 @@ StatusCode PandoraContentApiImpl::Create(const object_creation::Cluster::Paramet
         return STATUS_CODE_NOT_ALLOWED;
     }
 
-    PandoraReturnOnError(this->GetManager<Cluster>()->Create(parameters, pCluster, factory));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->SetAvailability(&parameters.m_caloHitList, false));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->SetAvailability(&parameters.m_isolatedCaloHitList, false));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->Create(parameters, pCluster, factory));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->SetAvailability(&parameters.m_caloHitList, false));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->SetAvailability(&parameters.m_isolatedCaloHitList, false));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -155,7 +155,7 @@ StatusCode PandoraContentApiImpl::Create(const object_creation::ParticleFlowObje
         return STATUS_CODE_NOT_ALLOWED;
     }
 
-    PandoraReturnOnError(this->GetManager<ParticleFlowObject>()->Create(pfoParameters, pPfo, factory));
+    RETURN_ON_ERROR(this->GetManager<ParticleFlowObject>()->Create(pfoParameters, pPfo, factory));
     this->GetManager<Cluster>()->SetAvailability(&pfoParameters.m_clusterList, false);
     this->GetManager<Track>()->SetAvailability(&pfoParameters.m_trackList, false);
     this->GetManager<Vertex>()->SetAvailability(&pfoParameters.m_vertexList, false);
@@ -248,7 +248,7 @@ StatusCode PandoraContentApiImpl::RunAlgorithm(const std::string &algorithmName)
     if (m_pPandora->m_pAlgorithmManager->m_algorithmMap.end() == iter)
         return STATUS_CODE_NOT_FOUND;
 
-    PandoraReturnOnError(this->PreRunAlgorithm(iter->second));
+    RETURN_ON_ERROR(this->PreRunAlgorithm(iter->second));
 
     try
     {
@@ -260,7 +260,7 @@ StatusCode PandoraContentApiImpl::RunAlgorithm(const std::string &algorithmName)
             std::cout << "> Running Algorithm: " << iter->second->GetInstanceName() << ", " << iter->second->GetType() << std::endl;
         }
 
-        PandoraThrowOnError(iter->second->Run());
+        THROW_ON_ERROR(iter->second->Run());
     }
     catch (const StatusCodeException &exception)
     {
@@ -278,7 +278,7 @@ StatusCode PandoraContentApiImpl::RunAlgorithm(const std::string &algorithmName)
         std::cout << "Failure in algorithm " << iter->first << ", " << iter->second->GetType() << ", unknown exception" << std::endl;
     }
 
-    PandoraReturnOnError(this->PostRunAlgorithm(iter->second));
+    RETURN_ON_ERROR(this->PostRunAlgorithm(iter->second));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -288,10 +288,10 @@ StatusCode PandoraContentApiImpl::RunAlgorithm(const std::string &algorithmName)
 StatusCode PandoraContentApiImpl::RunClusteringAlgorithm(const Algorithm &algorithm, const std::string &clusteringAlgorithmName,
     const ClusterList *&pNewClusterList, std::string &newClusterListName) const
 {
-    PandoraReturnOnError(this->GetManager<Cluster>()->CreateTemporaryListAndSetCurrent(&algorithm, newClusterListName));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->PrepareForClustering(&algorithm, newClusterListName));
-    PandoraReturnOnError(this->RunAlgorithm(clusteringAlgorithmName));
-    PandoraReturnOnError(this->GetManager<Cluster>()->GetCurrentList(pNewClusterList, newClusterListName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->CreateTemporaryListAndSetCurrent(&algorithm, newClusterListName));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->PrepareForClustering(&algorithm, newClusterListName));
+    RETURN_ON_ERROR(this->RunAlgorithm(clusteringAlgorithmName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->GetCurrentList(pNewClusterList, newClusterListName));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -358,7 +358,7 @@ template <typename T>
 StatusCode PandoraContentApiImpl::SaveList(const std::string &newListName) const
 {
     std::string currentListName;
-    PandoraReturnOnError(this->GetManager<T>()->GetCurrentListName(currentListName));
+    RETURN_ON_ERROR(this->GetManager<T>()->GetCurrentListName(currentListName));
     return this->GetManager<T>()->SaveObjects(newListName, currentListName);
 }
 
@@ -376,7 +376,7 @@ template <typename T>
 StatusCode PandoraContentApiImpl::SaveList(const std::string &newListName, const T &t) const
 {
     std::string currentListName;
-    PandoraReturnOnError(this->GetManager<T>()->GetCurrentListName(currentListName));
+    RETURN_ON_ERROR(this->GetManager<T>()->GetCurrentListName(currentListName));
     return this->GetManager<T>()->SaveObjects(newListName, currentListName, t);
 }
 
@@ -401,7 +401,7 @@ StatusCode PandoraContentApiImpl::TemporarilyReplaceCurrentList(const std::strin
 template <typename T>
 StatusCode PandoraContentApiImpl::CreateTemporaryListAndSetCurrent(const Algorithm &algorithm, const T *&pT, std::string &temporaryListName) const
 {
-    PandoraReturnOnError(this->GetManager<T>()->CreateTemporaryListAndSetCurrent(&algorithm, temporaryListName));
+    RETURN_ON_ERROR(this->GetManager<T>()->CreateTemporaryListAndSetCurrent(&algorithm, temporaryListName));
     return this->GetManager<T>()->GetCurrentList(pT, temporaryListName);
 }
 
@@ -426,8 +426,8 @@ StatusCode PandoraContentApiImpl::AddToCluster(const Cluster *const pCluster, co
 
     for (const CaloHit *const pCaloHit : *pCaloHitList)
     {
-        PandoraReturnOnError(this->GetManager<Cluster>()->AddToCluster(pCluster, pCaloHit));
-        PandoraReturnOnError(this->GetManager<CaloHit>()->SetAvailability(pCaloHit, false));
+        RETURN_ON_ERROR(this->GetManager<Cluster>()->AddToCluster(pCluster, pCaloHit));
+        RETURN_ON_ERROR(this->GetManager<CaloHit>()->SetAvailability(pCaloHit, false));
     }
 
     return STATUS_CODE_SUCCESS;
@@ -447,8 +447,8 @@ StatusCode PandoraContentApiImpl::RemoveFromCluster(const Cluster *const pCluste
     if ((pCluster->GetNCaloHits() <= 1) && (pCluster->GetNIsolatedCaloHits() == 0))
         return STATUS_CODE_NOT_ALLOWED;
 
-    PandoraReturnOnError(this->GetManager<Cluster>()->RemoveFromCluster(pCluster, pCaloHit));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->SetAvailability(pCaloHit, true));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->RemoveFromCluster(pCluster, pCaloHit));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->SetAvailability(pCaloHit, true));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -466,8 +466,8 @@ StatusCode PandoraContentApiImpl::AddIsolatedToCluster(const Cluster *const pClu
 
     for (const CaloHit *const pCaloHit : *pCaloHitList)
     {
-        PandoraReturnOnError(this->GetManager<Cluster>()->AddIsolatedToCluster(pCluster, pCaloHit));
-        PandoraReturnOnError(this->GetManager<CaloHit>()->SetAvailability(pCaloHit, false));
+        RETURN_ON_ERROR(this->GetManager<Cluster>()->AddIsolatedToCluster(pCluster, pCaloHit));
+        RETURN_ON_ERROR(this->GetManager<CaloHit>()->SetAvailability(pCaloHit, false));
     }
 
     return STATUS_CODE_SUCCESS;
@@ -487,8 +487,8 @@ StatusCode PandoraContentApiImpl::RemoveIsolatedFromCluster(const Cluster *const
     if ((pCluster->GetNCaloHits() == 0) && (pCluster->GetNIsolatedCaloHits() <= 1))
         return STATUS_CODE_NOT_ALLOWED;
 
-    PandoraReturnOnError(this->GetManager<Cluster>()->RemoveIsolatedFromCluster(pCluster, pCaloHit));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->SetAvailability(pCaloHit, true));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->RemoveIsolatedFromCluster(pCluster, pCaloHit));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->SetAvailability(pCaloHit, true));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -513,8 +513,8 @@ StatusCode PandoraContentApiImpl::MergeFragments(const CaloHit *const pFragmentC
 
 StatusCode PandoraContentApiImpl::AddTrackClusterAssociation(const Track *const pTrack, const Cluster *const pCluster) const
 {
-    PandoraReturnOnError(this->GetManager<Track>()->SetAssociatedCluster(pTrack, pCluster));
-    PandoraReturnOnError(this->GetManager<Cluster>()->AddTrackAssociation(pCluster, pTrack));
+    RETURN_ON_ERROR(this->GetManager<Track>()->SetAssociatedCluster(pTrack, pCluster));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->AddTrackAssociation(pCluster, pTrack));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -523,8 +523,8 @@ StatusCode PandoraContentApiImpl::AddTrackClusterAssociation(const Track *const 
 
 StatusCode PandoraContentApiImpl::RemoveTrackClusterAssociation(const Track *const pTrack, const Cluster *const pCluster) const
 {
-    PandoraReturnOnError(this->GetManager<Track>()->RemoveAssociatedCluster(pTrack, pCluster));
-    PandoraReturnOnError(this->GetManager<Cluster>()->RemoveTrackAssociation(pCluster, pTrack));
+    RETURN_ON_ERROR(this->GetManager<Track>()->RemoveAssociatedCluster(pTrack, pCluster));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->RemoveTrackAssociation(pCluster, pTrack));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -534,16 +534,16 @@ StatusCode PandoraContentApiImpl::RemoveTrackClusterAssociation(const Track *con
 StatusCode PandoraContentApiImpl::RemoveCurrentTrackClusterAssociations() const
 {
     TrackList danglingTracks;
-    PandoraReturnOnError(this->GetManager<Cluster>()->RemoveCurrentTrackAssociations(danglingTracks));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->RemoveCurrentTrackAssociations(danglingTracks));
 
     if (!danglingTracks.empty())
-        PandoraReturnOnError(this->GetManager<Track>()->RemoveClusterAssociations(danglingTracks));
+        RETURN_ON_ERROR(this->GetManager<Track>()->RemoveClusterAssociations(danglingTracks));
 
     TrackToClusterMap danglingClusters;
-    PandoraReturnOnError(this->GetManager<Track>()->RemoveCurrentClusterAssociations(danglingClusters));
+    RETURN_ON_ERROR(this->GetManager<Track>()->RemoveCurrentClusterAssociations(danglingClusters));
 
     if (!danglingClusters.empty())
-        PandoraReturnOnError(this->GetManager<Cluster>()->RemoveTrackAssociations(danglingClusters));
+        RETURN_ON_ERROR(this->GetManager<Cluster>()->RemoveTrackAssociations(danglingClusters));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -552,8 +552,8 @@ StatusCode PandoraContentApiImpl::RemoveCurrentTrackClusterAssociations() const
 
 StatusCode PandoraContentApiImpl::RemoveAllTrackClusterAssociations() const
 {
-    PandoraReturnOnError(this->GetManager<Track>()->RemoveAllClusterAssociations());
-    PandoraReturnOnError(this->GetManager<Cluster>()->RemoveAllTrackAssociations());
+    RETURN_ON_ERROR(this->GetManager<Track>()->RemoveAllClusterAssociations());
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->RemoveAllTrackAssociations());
 
     return STATUS_CODE_SUCCESS;
 }
@@ -562,9 +562,9 @@ StatusCode PandoraContentApiImpl::RemoveAllTrackClusterAssociations() const
 
 StatusCode PandoraContentApiImpl::RemoveAllMCParticleRelationships() const
 {
-    PandoraReturnOnError(this->GetManager<MCParticle>()->RemoveAllMCParticleRelationships());
-    PandoraReturnOnError(this->GetManager<CaloHit>()->RemoveAllMCParticleRelationships());
-    PandoraReturnOnError(this->GetManager<Track>()->RemoveAllMCParticleRelationships());
+    RETURN_ON_ERROR(this->GetManager<MCParticle>()->RemoveAllMCParticleRelationships());
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->RemoveAllMCParticleRelationships());
+    RETURN_ON_ERROR(this->GetManager<Track>()->RemoveAllMCParticleRelationships());
 
     return STATUS_CODE_SUCCESS;
 }
@@ -574,7 +574,7 @@ StatusCode PandoraContentApiImpl::RemoveAllMCParticleRelationships() const
 StatusCode PandoraContentApiImpl::MergeAndDeleteClusters(const Cluster *const pClusterToEnlarge, const Cluster *const pClusterToDelete) const
 {
     std::string currentListName;
-    PandoraReturnOnError(this->GetManager<Cluster>()->GetCurrentListName(currentListName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->GetCurrentListName(currentListName));
     return this->MergeAndDeleteClusters(pClusterToEnlarge, pClusterToDelete, currentListName, currentListName);
 }
 
@@ -586,8 +586,8 @@ StatusCode PandoraContentApiImpl::MergeAndDeleteClusters(const Cluster *const pC
     if ((pClusterToEnlarge == pClusterToDelete) || !this->GetManager<Cluster>()->IsAvailable(pClusterToDelete))
         return STATUS_CODE_NOT_ALLOWED;
 
-    PandoraReturnOnError(this->GetManager<Track>()->RemoveClusterAssociations(pClusterToDelete->GetAssociatedTrackList()));
-    PandoraReturnOnError(this->GetManager<Cluster>()->MergeAndDeleteClusters(pClusterToEnlarge, pClusterToDelete,
+    RETURN_ON_ERROR(this->GetManager<Track>()->RemoveClusterAssociations(pClusterToDelete->GetAssociatedTrackList()));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->MergeAndDeleteClusters(pClusterToEnlarge, pClusterToDelete,
         enlargeListName, deleteListName));
 
     return STATUS_CODE_SUCCESS;
@@ -601,7 +601,7 @@ StatusCode PandoraContentApiImpl::AddToPfo(const ParticleFlowObject *const pPfo,
     if (!this->GetManager<T>()->IsAvailable(pT))
         return STATUS_CODE_NOT_ALLOWED;
 
-    PandoraReturnOnError(this->GetManager<ParticleFlowObject>()->AddToPfo(pPfo, pT));
+    RETURN_ON_ERROR(this->GetManager<ParticleFlowObject>()->AddToPfo(pPfo, pT));
     this->GetManager<T>()->SetAvailability(pT, false);
 
     return STATUS_CODE_SUCCESS;
@@ -612,7 +612,7 @@ StatusCode PandoraContentApiImpl::AddToPfo(const ParticleFlowObject *const pPfo,
 template <typename T>
 StatusCode PandoraContentApiImpl::RemoveFromPfo(const ParticleFlowObject *const pPfo, const T *const pT) const
 {
-    PandoraReturnOnError(this->GetManager<ParticleFlowObject>()->RemoveFromPfo(pPfo, pT));
+    RETURN_ON_ERROR(this->GetManager<ParticleFlowObject>()->RemoveFromPfo(pPfo, pT));
     this->GetManager<T>()->SetAvailability(pT, true);
 
     return STATUS_CODE_SUCCESS;
@@ -694,8 +694,8 @@ StatusCode PandoraContentApiImpl::PrepareForDeletion(const ClusterList *const pC
         trackList.insert(trackList.end(), pCluster->GetAssociatedTrackList().begin(), pCluster->GetAssociatedTrackList().end());
     }
 
-    PandoraReturnOnError(this->GetManager<CaloHit>()->SetAvailability(&caloHitList, true));
-    PandoraReturnOnError(this->GetManager<Track>()->RemoveClusterAssociations(trackList));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->SetAvailability(&caloHitList, true));
+    RETURN_ON_ERROR(this->GetManager<Track>()->RemoveClusterAssociations(trackList));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -753,7 +753,7 @@ template <typename T>
 StatusCode PandoraContentApiImpl::Delete(const T *const pT) const
 {
     std::string currentListName;
-    PandoraReturnOnError(this->GetManager<T>()->GetCurrentListName(currentListName));
+    RETURN_ON_ERROR(this->GetManager<T>()->GetCurrentListName(currentListName));
     return this->Delete(pT, currentListName);
 }
 
@@ -762,28 +762,28 @@ StatusCode PandoraContentApiImpl::Delete(const T *const pT) const
 template <typename T>
 StatusCode PandoraContentApiImpl::Delete(const T *const pT, const std::string &listName) const
 {
-    PandoraReturnOnError(this->PrepareForDeletion(pT));
+    RETURN_ON_ERROR(this->PrepareForDeletion(pT));
     return this->GetManager<T>()->DeleteObject(pT, listName);
 }
 
 template <>
 StatusCode PandoraContentApiImpl::Delete(const ClusterList *const pT, const std::string &listName) const
 {
-    PandoraReturnOnError(this->PrepareForDeletion(pT));
+    RETURN_ON_ERROR(this->PrepareForDeletion(pT));
     return this->GetManager<ClusterList>()->DeleteObjects(*pT, listName);
 }
 
 template <>
 StatusCode PandoraContentApiImpl::Delete(const PfoList *const pT, const std::string &listName) const
 {
-    PandoraReturnOnError(this->PrepareForDeletion(pT));
+    RETURN_ON_ERROR(this->PrepareForDeletion(pT));
     return this->GetManager<PfoList>()->DeleteObjects(*pT, listName);
 }
 
 template <>
 StatusCode PandoraContentApiImpl::Delete(const VertexList *const pT, const std::string &listName) const
 {
-    PandoraReturnOnError(this->PrepareForDeletion(pT));
+    RETURN_ON_ERROR(this->PrepareForDeletion(pT));
     return this->GetManager<VertexList>()->DeleteObjects(*pT, listName);
 }
 
@@ -793,12 +793,12 @@ StatusCode PandoraContentApiImpl::InitializeFragmentation(const Algorithm &algor
     std::string &originalClustersListName, std::string &fragmentClustersListName) const
 {
     std::string inputClusterListName;
-    PandoraReturnOnError(this->GetManager<Cluster>()->GetAlgorithmInputListName(&algorithm, inputClusterListName));
-    PandoraReturnOnError(this->GetManager<Cluster>()->MoveObjectsToTemporaryListAndSetCurrent(&algorithm, inputClusterListName, originalClustersListName, inputClusterList));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->InitializeReclustering(&algorithm, inputClusterList, originalClustersListName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->GetAlgorithmInputListName(&algorithm, inputClusterListName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->MoveObjectsToTemporaryListAndSetCurrent(&algorithm, inputClusterListName, originalClustersListName, inputClusterList));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->InitializeReclustering(&algorithm, inputClusterList, originalClustersListName));
 
-    PandoraReturnOnError(this->GetManager<Cluster>()->CreateTemporaryListAndSetCurrent(&algorithm, fragmentClustersListName));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->PrepareForClustering(&algorithm, fragmentClustersListName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->CreateTemporaryListAndSetCurrent(&algorithm, fragmentClustersListName));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->PrepareForClustering(&algorithm, fragmentClustersListName));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -810,15 +810,15 @@ StatusCode PandoraContentApiImpl::EndFragmentation(const Algorithm &algorithm, c
 {
     std::string inputClusterListName;
     const ClusterList *pClustersToBeDeleted(nullptr);
-    PandoraReturnOnError(this->GetManager<Cluster>()->GetAlgorithmInputListName(&algorithm, inputClusterListName));
-    PandoraReturnOnError(this->GetManager<Cluster>()->SaveObjects(inputClusterListName, clusterListToSaveName));
-    PandoraReturnOnError(this->GetManager<Cluster>()->GetList(clusterListToDeleteName, pClustersToBeDeleted));
-    PandoraReturnOnError(this->PrepareForReclusteringDeletion(pClustersToBeDeleted));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->GetAlgorithmInputListName(&algorithm, inputClusterListName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->SaveObjects(inputClusterListName, clusterListToSaveName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->GetList(clusterListToDeleteName, pClustersToBeDeleted));
+    RETURN_ON_ERROR(this->PrepareForReclusteringDeletion(pClustersToBeDeleted));
 
-    PandoraReturnOnError(this->GetManager<Cluster>()->DeleteTemporaryObjects(&algorithm, clusterListToDeleteName));
-    PandoraReturnOnError(this->GetManager<Cluster>()->ResetCurrentListToAlgorithmInputList(&algorithm));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->EndReclustering(&algorithm, clusterListToSaveName));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->ResetCurrentListToAlgorithmInputList(&algorithm));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->DeleteTemporaryObjects(&algorithm, clusterListToDeleteName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->ResetCurrentListToAlgorithmInputList(&algorithm));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->EndReclustering(&algorithm, clusterListToSaveName));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->ResetCurrentListToAlgorithmInputList(&algorithm));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -829,11 +829,11 @@ StatusCode PandoraContentApiImpl::InitializeReclustering(const Algorithm &algori
     const ClusterList &inputClusterList, std::string &originalClustersListName) const
 {
     std::string inputClusterListName;
-    PandoraReturnOnError(this->GetManager<Cluster>()->GetAlgorithmInputListName(&algorithm, inputClusterListName));
-    PandoraReturnOnError(this->GetManager<Cluster>()->MoveObjectsToTemporaryListAndSetCurrent(&algorithm, inputClusterListName, originalClustersListName, inputClusterList));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->GetAlgorithmInputListName(&algorithm, inputClusterListName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->MoveObjectsToTemporaryListAndSetCurrent(&algorithm, inputClusterListName, originalClustersListName, inputClusterList));
 
-    PandoraReturnOnError(this->GetManager<Track>()->InitializeReclustering(&algorithm, inputTrackList, originalClustersListName));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->InitializeReclustering(&algorithm, inputClusterList, originalClustersListName));
+    RETURN_ON_ERROR(this->GetManager<Track>()->InitializeReclustering(&algorithm, inputTrackList, originalClustersListName));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->InitializeReclustering(&algorithm, inputClusterList, originalClustersListName));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -844,16 +844,16 @@ StatusCode PandoraContentApiImpl::EndReclustering(const Algorithm &algorithm, co
 {
     std::string inputClusterListName;
     ClusterList clustersToBeDeleted;
-    PandoraReturnOnError(this->GetManager<Cluster>()->GetAlgorithmInputListName(&algorithm, inputClusterListName));
-    PandoraReturnOnError(this->GetManager<Cluster>()->SaveObjects(inputClusterListName, selectedClusterListName));
-    PandoraReturnOnError(this->GetManager<Cluster>()->GetResetDeletionObjects(&algorithm, clustersToBeDeleted));
-    PandoraReturnOnError(this->PrepareForReclusteringDeletion(&clustersToBeDeleted));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->GetAlgorithmInputListName(&algorithm, inputClusterListName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->SaveObjects(inputClusterListName, selectedClusterListName));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->GetResetDeletionObjects(&algorithm, clustersToBeDeleted));
+    RETURN_ON_ERROR(this->PrepareForReclusteringDeletion(&clustersToBeDeleted));
 
-    PandoraReturnOnError(this->GetManager<CaloHit>()->ResetAlgorithmInfo(&algorithm, false));
-    PandoraReturnOnError(this->GetManager<Cluster>()->ResetAlgorithmInfo(&algorithm, false));
-    PandoraReturnOnError(this->GetManager<ParticleFlowObject>()->ResetAlgorithmInfo(&algorithm, false));
-    PandoraReturnOnError(this->GetManager<Track>()->ResetAlgorithmInfo(&algorithm, false));
-    PandoraReturnOnError(this->GetManager<CaloHit>()->EndReclustering(&algorithm, selectedClusterListName));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->ResetAlgorithmInfo(&algorithm, false));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->ResetAlgorithmInfo(&algorithm, false));
+    RETURN_ON_ERROR(this->GetManager<ParticleFlowObject>()->ResetAlgorithmInfo(&algorithm, false));
+    RETURN_ON_ERROR(this->GetManager<Track>()->ResetAlgorithmInfo(&algorithm, false));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->EndReclustering(&algorithm, selectedClusterListName));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -862,12 +862,12 @@ StatusCode PandoraContentApiImpl::EndReclustering(const Algorithm &algorithm, co
 
 StatusCode PandoraContentApiImpl::PreRunAlgorithm(Algorithm *const pAlgorithm) const
 {
-    PandoraReturnOnError(this->GetManager<CaloHit>()->RegisterAlgorithm(pAlgorithm));
-    PandoraReturnOnError(this->GetManager<Cluster>()->RegisterAlgorithm(pAlgorithm));
-    PandoraReturnOnError(this->GetManager<MCParticle>()->RegisterAlgorithm(pAlgorithm));
-    PandoraReturnOnError(this->GetManager<ParticleFlowObject>()->RegisterAlgorithm(pAlgorithm));
-    PandoraReturnOnError(this->GetManager<Track>()->RegisterAlgorithm(pAlgorithm));
-    PandoraReturnOnError(this->GetManager<Vertex>()->RegisterAlgorithm(pAlgorithm));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->RegisterAlgorithm(pAlgorithm));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->RegisterAlgorithm(pAlgorithm));
+    RETURN_ON_ERROR(this->GetManager<MCParticle>()->RegisterAlgorithm(pAlgorithm));
+    RETURN_ON_ERROR(this->GetManager<ParticleFlowObject>()->RegisterAlgorithm(pAlgorithm));
+    RETURN_ON_ERROR(this->GetManager<Track>()->RegisterAlgorithm(pAlgorithm));
+    RETURN_ON_ERROR(this->GetManager<Vertex>()->RegisterAlgorithm(pAlgorithm));
 
     return STATUS_CODE_SUCCESS;
 }
@@ -877,23 +877,23 @@ StatusCode PandoraContentApiImpl::PreRunAlgorithm(Algorithm *const pAlgorithm) c
 StatusCode PandoraContentApiImpl::PostRunAlgorithm(Algorithm *const pAlgorithm) const
 {
     PfoList pfosToBeDeleted;
-    PandoraReturnOnError(this->GetManager<ParticleFlowObject>()->GetResetDeletionObjects(pAlgorithm, pfosToBeDeleted));
-    PandoraReturnOnError(this->PrepareForDeletion(&pfosToBeDeleted));
+    RETURN_ON_ERROR(this->GetManager<ParticleFlowObject>()->GetResetDeletionObjects(pAlgorithm, pfosToBeDeleted));
+    RETURN_ON_ERROR(this->PrepareForDeletion(&pfosToBeDeleted));
 
     ClusterList clustersToBeDeleted;
-    PandoraReturnOnError(this->GetManager<Cluster>()->GetResetDeletionObjects(pAlgorithm, clustersToBeDeleted));
-    PandoraReturnOnError(this->PrepareForDeletion(&clustersToBeDeleted));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->GetResetDeletionObjects(pAlgorithm, clustersToBeDeleted));
+    RETURN_ON_ERROR(this->PrepareForDeletion(&clustersToBeDeleted));
 
     VertexList verticesToBeDeleted;
-    PandoraReturnOnError(this->GetManager<Vertex>()->GetResetDeletionObjects(pAlgorithm, verticesToBeDeleted));
-    PandoraReturnOnError(this->PrepareForDeletion(&verticesToBeDeleted));
+    RETURN_ON_ERROR(this->GetManager<Vertex>()->GetResetDeletionObjects(pAlgorithm, verticesToBeDeleted));
+    RETURN_ON_ERROR(this->PrepareForDeletion(&verticesToBeDeleted));
 
-    PandoraReturnOnError(this->GetManager<CaloHit>()->ResetAlgorithmInfo(pAlgorithm, true));
-    PandoraReturnOnError(this->GetManager<Cluster>()->ResetAlgorithmInfo(pAlgorithm, true));
-    PandoraReturnOnError(this->GetManager<MCParticle>()->ResetAlgorithmInfo(pAlgorithm, true));
-    PandoraReturnOnError(this->GetManager<ParticleFlowObject>()->ResetAlgorithmInfo(pAlgorithm, true));
-    PandoraReturnOnError(this->GetManager<Track>()->ResetAlgorithmInfo(pAlgorithm, true));
-    PandoraReturnOnError(this->GetManager<Vertex>()->ResetAlgorithmInfo(pAlgorithm, true));
+    RETURN_ON_ERROR(this->GetManager<CaloHit>()->ResetAlgorithmInfo(pAlgorithm, true));
+    RETURN_ON_ERROR(this->GetManager<Cluster>()->ResetAlgorithmInfo(pAlgorithm, true));
+    RETURN_ON_ERROR(this->GetManager<MCParticle>()->ResetAlgorithmInfo(pAlgorithm, true));
+    RETURN_ON_ERROR(this->GetManager<ParticleFlowObject>()->ResetAlgorithmInfo(pAlgorithm, true));
+    RETURN_ON_ERROR(this->GetManager<Track>()->ResetAlgorithmInfo(pAlgorithm, true));
+    RETURN_ON_ERROR(this->GetManager<Vertex>()->ResetAlgorithmInfo(pAlgorithm, true));
 
     return STATUS_CODE_SUCCESS;
 }

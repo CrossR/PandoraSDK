@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/src/Pandora/PandoraImpl.cc
- * 
+ *
  *  @brief  Implementation of the pandora impl class.
- * 
+ *
  *  $Log: $
  */
 
@@ -28,19 +28,19 @@ namespace pandora
 
 StatusCode PandoraImpl::PrepareMCParticles() const
 {
-    PandoraReturnOnError(m_pPandora->m_pMCManager->CreateInputList());
-    PandoraReturnOnError(m_pPandora->m_pMCManager->AddMCParticleRelationships());
-    PandoraReturnOnError(m_pPandora->m_pMCManager->IdentifyPfoTargets());
+    RETURN_ON_ERROR(m_pPandora->m_pMCManager->CreateInputList());
+    RETURN_ON_ERROR(m_pPandora->m_pMCManager->AddMCParticleRelationships());
+    RETURN_ON_ERROR(m_pPandora->m_pMCManager->IdentifyPfoTargets());
 
     UidToMCParticleWeightMap caloHitToPfoTargetsMap;
-    PandoraReturnOnError(m_pPandora->m_pMCManager->CreateCaloHitToPfoTargetsMap(caloHitToPfoTargetsMap));
-    PandoraReturnOnError(m_pPandora->m_pCaloHitManager->MatchCaloHitsToMCPfoTargets(caloHitToPfoTargetsMap));
+    RETURN_ON_ERROR(m_pPandora->m_pMCManager->CreateCaloHitToPfoTargetsMap(caloHitToPfoTargetsMap));
+    RETURN_ON_ERROR(m_pPandora->m_pCaloHitManager->MatchCaloHitsToMCPfoTargets(caloHitToPfoTargetsMap));
 
     UidToMCParticleWeightMap trackToPfoTargetsMap;
-    PandoraReturnOnError(m_pPandora->m_pMCManager->CreateTrackToPfoTargetsMap(trackToPfoTargetsMap));
-    PandoraReturnOnError(m_pPandora->m_pTrackManager->MatchTracksToMCPfoTargets(trackToPfoTargetsMap));
+    RETURN_ON_ERROR(m_pPandora->m_pMCManager->CreateTrackToPfoTargetsMap(trackToPfoTargetsMap));
+    RETURN_ON_ERROR(m_pPandora->m_pTrackManager->MatchTracksToMCPfoTargets(trackToPfoTargetsMap));
 
-    PandoraReturnOnError(m_pPandora->m_pMCManager->SelectPfoTargets());
+    RETURN_ON_ERROR(m_pPandora->m_pMCManager->SelectPfoTargets());
 
     return STATUS_CODE_SUCCESS;
 }
@@ -48,8 +48,8 @@ StatusCode PandoraImpl::PrepareMCParticles() const
 
 StatusCode PandoraImpl::PrepareTracks() const
 {
-    PandoraReturnOnError(m_pPandora->m_pTrackManager->CreateInputList());
-    PandoraReturnOnError(m_pPandora->m_pTrackManager->AssociateTracks());
+    RETURN_ON_ERROR(m_pPandora->m_pTrackManager->CreateInputList());
+    RETURN_ON_ERROR(m_pPandora->m_pTrackManager->AssociateTracks());
 
     return STATUS_CODE_SUCCESS;
 }
@@ -100,15 +100,15 @@ StatusCode PandoraImpl::InitializePlugins(const TiXmlHandle *const pXmlHandle) c
 
 StatusCode PandoraImpl::ResetEvent() const
 {
-    PandoraReturnOnError(m_pPandora->m_pCaloHitManager->ResetForNextEvent());
-    PandoraReturnOnError(m_pPandora->m_pClusterManager->ResetForNextEvent());
-    PandoraReturnOnError(m_pPandora->m_pMCManager->ResetForNextEvent());
-    PandoraReturnOnError(m_pPandora->m_pPfoManager->ResetForNextEvent());
-    PandoraReturnOnError(m_pPandora->m_pTrackManager->ResetForNextEvent());
-    PandoraReturnOnError(m_pPandora->m_pVertexManager->ResetForNextEvent());
-    PandoraReturnOnError(m_pPandora->m_pAlgorithmManager->ResetForNextEvent());
-    PandoraReturnOnError(m_pPandora->m_pPluginManager->ResetForNextEvent());
-    PandoraReturnOnError(m_pPandora->m_pEventContext->ResetForNextEvent());
+    RETURN_ON_ERROR(m_pPandora->m_pCaloHitManager->ResetForNextEvent());
+    RETURN_ON_ERROR(m_pPandora->m_pClusterManager->ResetForNextEvent());
+    RETURN_ON_ERROR(m_pPandora->m_pMCManager->ResetForNextEvent());
+    RETURN_ON_ERROR(m_pPandora->m_pPfoManager->ResetForNextEvent());
+    RETURN_ON_ERROR(m_pPandora->m_pTrackManager->ResetForNextEvent());
+    RETURN_ON_ERROR(m_pPandora->m_pVertexManager->ResetForNextEvent());
+    RETURN_ON_ERROR(m_pPandora->m_pAlgorithmManager->ResetForNextEvent());
+    RETURN_ON_ERROR(m_pPandora->m_pPluginManager->ResetForNextEvent());
+    RETURN_ON_ERROR(m_pPandora->m_pEventContext->ResetForNextEvent());
 
     return STATUS_CODE_SUCCESS;
 }

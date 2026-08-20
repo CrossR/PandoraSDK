@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/src/Managers/Manager.cc
- * 
+ *
  *  @brief  Implementation of the manager class.
- * 
+ *
  *  $Log: $
  */
 
@@ -246,8 +246,8 @@ StatusCode Manager<T>::ResetAlgorithmInfo(const Algorithm *const pAlgorithm, boo
 template<typename T>
 StatusCode Manager<T>::ResetForNextEvent()
 {
-    PandoraReturnOnError(this->EraseAllContent());
-    PandoraReturnOnError(this->CreateInitialLists());
+    RETURN_ON_ERROR(this->EraseAllContent());
+    RETURN_ON_ERROR(this->CreateInitialLists());
 
     return STATUS_CODE_SUCCESS;
 }
