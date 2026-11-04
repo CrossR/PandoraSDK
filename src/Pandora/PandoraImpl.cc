@@ -1,8 +1,8 @@
 /**
  *  @file   PandoraSDK/src/Pandora/PandoraImpl.cc
- * 
+ *
  *  @brief  Implementation of the pandora impl class.
- * 
+ *
  *  $Log: $
  */
 
@@ -100,9 +100,25 @@ StatusCode PandoraImpl::InitializePlugins(const TiXmlHandle *const pXmlHandle) c
 
 StatusCode PandoraImpl::ResetEvent() const
 {
+    return this->ResetEvent(true);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+StatusCode PandoraImpl::ResetEvent(const bool resetMCParticles) const
+{
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandora->m_pCaloHitManager->ResetForNextEvent());
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandora->m_pClusterManager->ResetForNextEvent());
-    PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandora->m_pMCManager->ResetForNextEvent());
+
+    if (resetMCParticles)
+    {
+        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandora->m_pMCManager->ResetForNextEvent());
+    }
+    else
+    {
+        PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandora->m_pMCManager->ResetForNextEventKeepingMCParticles());
+    }
+
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandora->m_pPfoManager->ResetForNextEvent());
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandora->m_pTrackManager->ResetForNextEvent());
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, m_pPandora->m_pVertexManager->ResetForNextEvent());

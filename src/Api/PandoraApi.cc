@@ -174,3 +174,10 @@ pandora::StatusCode PandoraApi::Reset(const pandora::Pandora &pandora)
 {
     return pandora.GetPandoraApiImpl()->ResetEvent();
 }
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+pandora::StatusCode PandoraApi::Reset(const pandora::Pandora &pandora, const bool resetMCParticles)
+{
+    return pandora.GetPandoraApiImpl()->ResetEvent(resetMCParticles);
+}

@@ -135,6 +135,13 @@ StatusCode Pandora::ResetEvent()
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+StatusCode Pandora::ResetEvent(const bool resetMCParticles)
+{
+    return m_pPandoraImpl->ResetEvent(resetMCParticles);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 StatusCode Pandora::ReadSettings(const std::string &xmlFileName)
 {
     try

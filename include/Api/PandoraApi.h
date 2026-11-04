@@ -249,6 +249,14 @@ public:
      *  @param  pandora the pandora instance to reset
      */
     static pandora::StatusCode Reset(const pandora::Pandora &pandora);
+
+    /**
+     *  @brief  Reset pandora to process another event, optionally keeping the MC particle relationships
+     *
+     *  @param  pandora the pandora instance to reset
+     *  @param  resetMCParticles whether to delete the mc particles too (true is equivalent to Reset(pandora))
+     */
+    static pandora::StatusCode Reset(const pandora::Pandora &pandora, const bool resetMCParticles);
 };
 
 #endif // #ifndef PANDORA_API_H

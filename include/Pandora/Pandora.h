@@ -143,6 +143,11 @@ private:
     StatusCode ResetEvent();
 
     /**
+     *  @brief  Reset event, optionally keeping the mc particles (see PandoraApi::Reset)
+     */
+    StatusCode ResetEvent(const bool resetMCParticles);
+
+    /**
      *  @brief  Get event number of the input data
      *
      *  @param  the run number of the input data

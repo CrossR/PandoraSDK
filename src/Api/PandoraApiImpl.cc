@@ -247,6 +247,13 @@ StatusCode PandoraApiImpl::ResetEvent() const
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+StatusCode PandoraApiImpl::ResetEvent(const bool resetMCParticles) const
+{
+    return m_pPandora->ResetEvent(resetMCParticles);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 PandoraApiImpl::PandoraApiImpl(Pandora *const pPandora) :
     m_pPandora(pPandora)
 {
